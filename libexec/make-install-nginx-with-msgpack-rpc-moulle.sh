@@ -75,7 +75,7 @@ sudo make install
 
 echo "${ECHO_PREFIX} nginx.conf is here => ${INSTALL_DIR}/conf/nginx.conf"
 echo ""
-echo "${ECHO_PREFIX} nginx with msgpack_rpc_module can start to exec =${INSTALL_DIR}/sbin/nginx"
+echo "${ECHO_PREFIX} nginx with msgpack_rpc_module can start to exec ${INSTALL_DIR}/sbin/nginx"
 echo "Usage :"
 echo "  Start                     : ${INSTALL_DIR}/sbin/nginx"
 echo "  Stop                      : ${INSTALL_DIR}/sbin/nginx -s stop"
