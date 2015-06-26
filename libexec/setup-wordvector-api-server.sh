@@ -19,7 +19,7 @@ echo "$SCRIPT_NAME Install mecab and mecab-ipadic"
 $BASEDIR/../libexec/install-mecab-and-mecab-ipadic.sh
 
 echo "$SCRIPT_NAME Install mecab-ipadic-overlast"
-$BASEDIR/../libexec/update-mecab-ipadic-overlast.sh
+$BASEDIR/../libexec/update-mecab-ipadic-neologd.sh
 
 echo "$SCRIPT_NAME Install word2vec"
 $BASEDIR/../libexec/make-install-word2vec.sh
