@@ -7,11 +7,11 @@ set -e # die when an error will occur
 
 BASEDIR=`cd $(dirname $0); pwd`
 USER_ID=`/usr/bin/id -u`
-SCRIPT="[make-install-nginx-with-msgpack-rpc-moulle] : "
+SCRIPT="[make_sample_nginx] : "
 
-TMPDIR=/var/tmp/nginx-with-msgpack-rpc-module
+TMPDIR=/tmp/nginx-with-msgpack-rpc-module
 
-NGX_VERSION=1.8.0
+NGX_VERSION=1.6.2
 NGX_DIR_NAME=nginx-${NGX_VERSION}
 
 NGX_DIR=nginx-with-msgpack-rpc-module
@@ -73,6 +73,10 @@ cd ${NGX_DIR_NAME}
 ${NGX_MODULE_DIR}/bin/fix_makefile.pl ./objs/Makefile
 make
 sudo make install
+
+echo "${SCRIPT} deleting ${TMPDIR}"
+cd ${BASEDIR}/../
+rm -rf ${TMPDIR}
 
 echo "${SCRIPT} nginx.conf is here => ${INSTALL_DIR}/conf/nginx.conf"
 echo ""
