@@ -7,11 +7,11 @@ set -e # die when an error will occur
 
 BASEDIR=`cd $(dirname $0); pwd`
 USER_ID=`/usr/bin/id -u`
-SCRIPT="[make_sample_nginx] : "
+ECHO_PREFIX="[make_sample_nginx] : "
 
 TMPDIR=/tmp/nginx-with-msgpack-rpc-module
 
-NGX_VERSION=1.6.2
+NGX_VERSION=1.8.0
 NGX_DIR_NAME=nginx-${NGX_VERSION}
 
 NGX_DIR=nginx-with-msgpack-rpc-module
@@ -20,41 +20,40 @@ INSTALL_DIR=/usr/local/${NGX_DIR}
 NGX_MODULE_DIR=${TMPDIR}/nginx-msgpack-rpc-module
 ECHO_MODULE_DIR=${TMPDIR}/echo-nginx-module
 
-echo "$SCRIPT_NAME Get sudo password"
+echo "${ECHO_PREFIX} Get sudo password"
 sudo pwd
 
-echo "${SCRIPT} nginx will install to ${INSTALL_DIR}."
+echo "${ECHO_PREFIX} nginx will install to ${INSTALL_DIR}."
 
 while true;do
-    echo "${SCRIPT} nginx will install to ${INSTALL_DIR}."
-    echo "${SCRIPT} Type 'yes|y' or 'dir path which you want to install'."
+    echo "${ECHO_PREFIX} nginx will install to ${INSTALL_DIR}."
+    echo "${ECHO_PREFIX} Type 'yes|y' or 'dir path which you want to install'."
     read answer
     case $answer in
         yes)
-            echo -e "${SCRIPT} [yes]\n"
-            echo -e "${SCRIPT} nginx will install to ${INSTALL_DIR}.\n"
+            echo -e "${ECHO_PREFIX} [yes]\n"
+            echo -e "${ECHO_PREFIX} nginx will install to ${INSTALL_DIR}.\n"
             break
             ;;
         y)
-            echo -e "${SCRIPT} [y]\n"
-            echo -e "${SCRIPT} nginx will install to ${INSTALL_DIR}.\n"
+            echo -e "${ECHO_PREFIX} [y]\n"
+            echo -e "${ECHO_PREFIX} nginx will install to ${INSTALL_DIR}.\n"
             break
             ;;
         *)
-            echo -e "${SCRIPT} [$answer]\n"
+            echo -e "${ECHO_PREFIX} [$answer]\n"
             INSTALL_DIR=$answer
-            echo -e "${SCRIPT} instll dir is changed.\n"
+            echo -e "${ECHO_PREFIX} instll dir is changed.\n"
             ;;
     esac
 done
 
 if [ ! -e /usr/local/lib/libmsgpack_rpc_client.so.0.0.1 ]; then
-    echo "$SCRIPT_NAME msgpack-rpc-c must be installed.."
+    echo "${ECHO_PREFIX} msgpack-rpc-c must be installed.."
     $BASEDIR/../sh/make_centos_env.sh
 fi
 
-echo "${SCRIPT} cd to tmp dir"
-
+echo "${ECHO_PREFIX} cd to tmp dir"
 if [ -e ${TMPDIR} ]; then
     rm -rf ${TMPDIR}
 fi
@@ -74,13 +73,9 @@ ${NGX_MODULE_DIR}/bin/fix_makefile.pl ./objs/Makefile
 make
 sudo make install
 
-echo "${SCRIPT} deleting ${TMPDIR}"
-cd ${BASEDIR}/../
-rm -rf ${TMPDIR}
-
-echo "${SCRIPT} nginx.conf is here => ${INSTALL_DIR}/conf/nginx.conf"
+echo "${ECHO_PREFIX} nginx.conf is here => ${INSTALL_DIR}/conf/nginx.conf"
 echo ""
-echo "${SCRIPT} nginx with msgpack_rpc_module can start to exec =${INSTALL_DIR}/sbin/nginx"
+echo "${ECHO_PREFIX} nginx with msgpack_rpc_module can start to exec =${INSTALL_DIR}/sbin/nginx"
 echo "Usage :"
 echo "  Start                     : ${INSTALL_DIR}/sbin/nginx"
 echo "  Stop                      : ${INSTALL_DIR}/sbin/nginx -s stop"
