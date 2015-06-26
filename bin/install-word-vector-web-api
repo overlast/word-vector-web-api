@@ -1,0 +1,141 @@
+#!/usr/bin/env bash
+
+# Copyright (C) 2015 Toshinori Sato (@overlast)
+#
+#       https://github.com/overlast/word-vector-web-api
+#
+# Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+BASEDIR=$(cd $(dirname $0);pwd)
+PROGRAM_NAME=install-word-vector-web-api
+ECHO_PREFIX="[${PROGRAM_NAME}] :"
+
+VERSION="install-word-vector-web-api version 0.0.1"
+
+usage() {
+    echo "Usage: $PROGRAM_NAME [OPTIONS]"
+    echo "  This script is the installer of mecab-ipadic-neologd"
+    echo
+    echo "Options:"
+    echo "  -h, --help"
+    echo
+    echo "  -v, --version"
+    echo
+    echo "  -p, --prefix /PATH/TO/INSTALL/DIRECTORY"
+    echo "     Set any directory path where you want to install"
+    echo
+    echo "  -y, --forceyes"
+    echo "     If you want to install regardless of the result of test"
+    echo
+    echo "  -u, --asuser"
+    echo "     If you want to install to the user directory as an user"
+    echo
+    echo "  -n, --newest"
+    echo "     If you want to update mecab-ipadic-neologd"
+    echo
+    exit 1
+}
+
+INSTALL_PATH_PREFIX="/usr/local"
+IS_FORCE_YES=0
+IS_AS_USER=0
+WANNA_UPDATE=0
+
+for OPT in "$@"
+do
+    case "$OPT" in
+        '-h'|'--help' )
+            usage
+            exit 1
+            ;;
+        '-v'|'--version' )
+            echo $VERSION
+            exit 1
+            ;;
+        '-p'|'--prefix' )
+            if [[ -z "$2" ]] || [[ "$2" =~ ^-+ ]]; then
+                echo "${PROGRAM_NAME}: option requires an argument -- $1" 1>&2
+                usage
+                exit 1
+            fi
+            INSTALL_PATH_PREFIX="$2"
+            shift 2
+            ;;
+        '-y'|'--forceyes' )
+            IS_FORCE_YES=1
+            shift 1
+            ;;
+        '-u'|'--asuser' )
+            IS_AS_USER=1
+            shift 1
+            ;;
+        '-n'|'--newest' )
+            WANNA_UPDATE=1
+            shift 1
+            ;;
+        -*)
+            echo "${PROGRAM_NAME}: illegal option -- '$(echo $1 | sed 's/^-*//')'" 1>&2
+            usage
+            exit 1
+            ;;
+        *)
+            if [[ ! -z "$1" ]] && [[ ! "$1" =~ ^-+ ]]; then
+                #param=( ${param[@]} "$1" )
+                param+=( "$1" )
+                shift 1
+            fi
+            ;;
+    esac
+done
+
+echo "$ECHO_PREFIX Start.."
+
+echo "$ECHO_PREFIX Check the exists of libraries"
+COMMANDS=(find sort head cut egrep  make curl sed cat diff tar unxz xargs grep iconv)
+for COMMAND in ${COMMANDS[@]};do
+    if [ ! `which ${COMMAND}` ]; then
+        echo "$ECHO_PREFIX ${COMMAND} is not found."
+        exit 1
+    else
+        echo "$ECHO_PREFIX ${COMMAND} => ok"
+    fi
+done
+
+if [ ${WANNA_UPDATE} = 1 ]; then
+    echo
+    echo "$ECHO_PREFIX Get the newest updated information using git"
+    cd ${BASEDIR}/../
+    git fetch origin
+    git reset --hard origin/master
+    git pull
+fi
+
+if [ -z ${INSTALL_PATH_PREFIX} ]; then
+    echo
+fi
+
+echo ""
+echo "$ECHO_PREFIX word-vector-web-api will be install to ${INSTALL_PATH_PREFIX}"
+echo ""
+sleep 3
+
+echo "$ECHO_PREFIX Make word-vector-web-api"
+${BASEDIR}/../libexec/setup-word-vector-web-api.sh -p ${INSTALL_PATH_PREFIX} -u ${WANNA_CREATE_USER_DIC}
+
+if [ $? != 0 ]; then
+    echo ""
+    echo "$ECHO_PREFIX Failed to make word-vector-web-api"
+    exit 1
+fi
+
+echo "$ECHO_PREFIX Finish.."
