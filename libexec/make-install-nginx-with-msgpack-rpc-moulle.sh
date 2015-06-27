@@ -21,9 +21,9 @@ set -e # die when an error will occur
 
 BASEDIR=`cd $(dirname $0); pwd`
 USER_ID=`/usr/bin/id -u`
-ECHO_PREFIX="[make_sample_nginx] : "
+ECHO_PREFIX="[make-install-nginx-with-msgpack-rpc-moulle] : "
 
-TMPDIR=/tmp/nginx-with-msgpack-rpc-module
+TMPDIR=/var/tmp/nginx-with-msgpack-rpc-module
 
 NGX_VERSION=1.8.0
 NGX_DIR_NAME=nginx-${NGX_VERSION}
@@ -64,7 +64,17 @@ done
 
 if [ ! -e /usr/local/lib/libmsgpack_rpc_client.so.0.0.1 ]; then
     echo "${ECHO_PREFIX} msgpack-rpc-c must be installed.."
-    $BASEDIR/../sh/make_centos_env.sh
+
+    if [ "$(uname)" == 'Darwin' ]; then
+        echo "$SCRIPT_NAME OSX is supported"
+        $BASEDIR/../libexec/make_osx_env.sh
+    elif [ "$(expr substr $(uname -s) 1 5)" == 'Linux' ]; then
+        echo "$SCRIPT_NAME Linux is supported"
+        $BASEDIR/../libexec/make_centos_env.sh
+    else
+        echo "$SCRIPT_NAME Your platform ($(uname -a)) isn't supported"
+        exit 1
+    fi
 fi
 
 echo "${ECHO_PREFIX} cd to tmp dir"
