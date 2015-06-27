@@ -18,6 +18,7 @@
 
 BASEDIR=$(cd $(dirname $0);pwd)
 SCRIPT_NAME="[setup-wordvector-api-server] :"
+PREFIX=/usr/local
 
 echo "$SCRIPT_NAME Start.."
 
@@ -33,22 +34,56 @@ fi
 echo "$SCRIPT_NAME Get sudo password"
 sudo pwd
 
-echo "$SCRIPT_NAME Install nginx-with-msgpack-rpc-moulle"
-$BASEDIR/../libexec/make-install-nginx-with-msgpack-rpc-moulle.sh
+NGXWMPRPCM_DIR=${PREFIX}/nginx-with-msgpack-rpc-module
+if [ -d ${NGXWMPRPCM_DIR} ]; then
+        echo "$SCRIPT_NAME nginx-with-msgpack-rpc-moulle is already installed"
+else
+    echo "$SCRIPT_NAME Install nginx-with-msgpack-rpc-moulle"
+    $BASEDIR/../libexec/make-install-nginx-with-msgpack-rpc-moulle.sh
+fi
 
-echo "$SCRIPT_NAME Create symlink to www dir from nginx-with-msgpack-rpc-moulle dir"
-$BASEDIR/../libexec/create_symlink_from_nginxdir_to_wwwdir.sh
+WWW_DIR_PATH=${NGXWMPRPCM_DIR}/www
+if [ -e ${WWW_DIR_PATH} ]; then
+        echo "$SCRIPT_NAME symlink to www dir from nginx-with-msgpack-rpc-moulle dir is already created"
+else
+    echo "$SCRIPT_NAME Create symlink to www dir from nginx-with-msgpack-rpc-moulle dir"
+    $BASEDIR/../libexec/create_symlink_from_nginxdir_to_wwwdir.sh
+fi
 
-echo "$SCRIPT_NAME Install word2vec-msgpack-rpc-server"
-$BASEDIR/../libexec/make-install-word2vec-msgpack-rpc-server.sh
+W2VMPRPCS_PATH=`which word2vec-msgpack-rpc-server`
+if [ -e ${W2VMPRPCS_PATH} ]; then
+    echo "$SCRIPT_NAME word2vec-msgpack-rpc-server is already installed"
+else
+    echo "$SCRIPT_NAME Install word2vec-msgpack-rpc-server"
+    $BASEDIR/../libexec/make-install-word2vec-msgpack-rpc-server.sh
+fi
 
-echo "$SCRIPT_NAME Install mecab and mecab-ipadic"
-$BASEDIR/../libexec/install-mecab-and-mecab-ipadic.sh
+MECAB_PATH=`which mecab`
+MECAB_DIC_DIR=`${MECAB_PATH}-config --dicdir`
+MECAB_IPADIC_DIR=${MECAB_DIC_DIR}/ipadic
+if [ -e ${MECAB_PATH}-config ] && [ -d ${MECAB_IPADIC_DIR} ]; then
+    echo "$SCRIPT_NAME MeCab and mecab-ipadic is already installed"
+else
+    echo "$SCRIPT_NAME Install MeCab and mecab-ipadic"
+    $BASEDIR/../libexec/install-mecab-and-mecab-ipadic.sh
+fi
 
-echo "$SCRIPT_NAME Install mecab-ipadic-overlast"
-$BASEDIR/../libexec/update-mecab-ipadic-neologd.sh
+MECAB_PATH=`which mecab`
+MECAB_DIC_DIR=`${MECAB_PATH}-config --dicdir`
+MECAB_IPADIC_NEOLOGD_DIR=${MECAB_DIC_DIR}/mecab-ipadic-neologd
+if [ -d ${MECAB_IPADIC_NEOLOGD_DIR} ]; then
+    echo "$SCRIPT_NAME mecab-ipadic-NEologd is already installed"
+else
+    echo "$SCRIPT_NAME Install mecab-ipadic-NEologd"
+    $BASEDIR/../libexec/update-mecab-ipadic-neologd.sh
+fi
 
-echo "$SCRIPT_NAME Install word2vec"
-$BASEDIR/../libexec/make-install-word2vec.sh
+WORD2VEC_DIR=$BASEDIR/../word2vec
+if [ -d ${WORD2VEC_DIR} ]; then
+    echo "$SCRIPT_NAME Word2Vec is already installed"
+else
+    echo "$SCRIPT_NAME Install Word2Vec"
+    $BASEDIR/../libexec/make-install-word2vec.sh
+fi
 
 echo "$SCRIPT_NAME Finish.."
