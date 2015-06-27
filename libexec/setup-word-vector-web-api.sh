@@ -19,6 +19,17 @@
 BASEDIR=$(cd $(dirname $0);pwd)
 SCRIPT_NAME="[setup-wordvector-api-server] :"
 
+echo "$SCRIPT_NAME Start.."
+
+if [ "$(uname)" == 'Darwin' ]; then
+    echo "$SCRIPT_NAME OSX is supported"
+elif [ "$(expr substr $(uname -s) 1 5)" == 'Linux' ]; then
+    echo "$SCRIPT_NAME Linux is supported"
+else
+    echo "$SCRIPT_NAME Your platform ($(uname -a)) isn't supported"
+    exit 1
+fi
+
 echo "$SCRIPT_NAME Get sudo password"
 sudo pwd
 
