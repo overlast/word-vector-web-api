@@ -26,7 +26,7 @@ echo "$SCRIPT_NAME Install nginx-with-msgpack-rpc-moulle"
 $BASEDIR/../libexec/make-install-nginx-with-msgpack-rpc-moulle.sh
 
 echo "$SCRIPT_NAME Create symlink to www dir from nginx-with-msgpack-rpc-moulle dir"
-$BASEDIR/../libexec/create_symlink_from_nginx_dir_to_www_dir.sh
+$BASEDIR/../libexec/create_symlink_from_nginxdir_to_wwwdir.sh
 
 echo "$SCRIPT_NAME Install word2vec-msgpack-rpc-server"
 $BASEDIR/../libexec/make-install-word2vec-msgpack-rpc-server.sh
