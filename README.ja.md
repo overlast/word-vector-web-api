@@ -96,13 +96,11 @@ word-vector-web-api/model 以下にコピーしたモデルファイルを解凍
 
 このコマンドで立ち上がるプロセスは以下のポートを使います。
 
-| process name | port number |
-| --- | --- |
-| nginx(master) | 22670 |
-| nginx(slave) | 22671 |
-| word2vec-message-pack-server | 22676 |
-
-slave の nginx プロセスを複数立ち上げたいときは nginx.conf を編集します。
+| process name | port number | access to |
+| --- | --- | --- |
+| nginx(master) | 22670 | nginx(slave) |
+| nginx(slave) | 22671 | word2vec-message-pack-server |
+| word2vec-message-pack-server | 22676 | sample model |
 
 #### Step4. サンプルモデルを使って Word Vector Web API を起動
 例えば、distance 相当の結果を得る場合は、以下の様にアクセスします。
@@ -117,6 +115,32 @@ slave の nginx プロセスを複数立ち上げたいときは nginx.conf を�
 以下のコマンドで Step3 で起動した Word Vector Web API を起動できます。
 
     $ libexec/quit-word-vector-web-api-sample.sh
+
+#### Step6. サンプルモデルを使って複数プロセスを使った Word Vector Web API を起動
+slave の nginx プロセスを複数立ち上げたいときは nginx.conf を編集します。
+
+でも、大変だと思うのでとりあえずサンプルを用意してあります。
+
+    $ libexec/boot-word-vector-web-api-3-slaves-sample.sh
+
+起動すると計 3 GByte 程度のメモリを使います。
+
+このコマンドで立ち上がるプロセスは以下のポートを使います。
+
+| process name | port number | access to |
+| --- | --- | --- |
+| nginx(master) | 22670 | nginx(slave 1、2と3 に均等に) |
+| nginx(slave 1) | 22671 | word2vec-message-pack-server 1 |
+| nginx(slave 2) | 22672 | word2vec-message-pack-server 2 |
+| nginx(slave 3) | 22673 | word2vec-message-pack-server 3 |
+| word2vec-message-pack-server 1 | 22676 | sample model |
+| word2vec-message-pack-server 2 | 22677 | sample model |
+| word2vec-message-pack-server 3 | 22678 | sample model |
+
+#### Step7. サンプルモデルを使った複数プロセスを使った Word Vector Web API を停止
+以下のコマンドで Step6 で起動した Word Vector Web API を起動できます。
+
+    $ libexec/quit-word-vector-web-api-3-slaves-sample.sh
 
 ## サンプルの実行例 (CentOS 上でインストールした場合)
 ### mecab-ipadic-neologd をシステム辞書として使った場合
