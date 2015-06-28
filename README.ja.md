@@ -94,6 +94,7 @@ word-vector-web-api/model 以下にコピーしたモデルファイルを解凍
 このコマンドで立ち上がるプロセスは以下のポートを使います。
 
 | process name | port number |
+| --- | --- |
 | nginx(master) | 22670 |
 | nginx(slave) | 22671 |
 | word2vec-message-pack-server | 22676 |
