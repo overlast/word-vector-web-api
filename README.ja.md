@@ -92,6 +92,8 @@ word-vector-web-api/model 以下にコピーしたモデルファイルを解凍
 
     $ libexec/boot-word-vector-web-api-sample.sh
 
+起動すると 1 GByte 程度のメモリを使います。
+
 このコマンドで立ち上がるプロセスは以下のポートを使います。
 
 | process name | port number |
@@ -99,6 +101,8 @@ word-vector-web-api/model 以下にコピーしたモデルファイルを解凍
 | nginx(master) | 22670 |
 | nginx(slave) | 22671 |
 | word2vec-message-pack-server | 22676 |
+
+slave の nginx プロセスを複数立ち上げたいときは nginx.conf を編集します。
 
 #### Step4. サンプルモデルを使って Word Vector Web API を起動
 例えば、distance 相当の結果を得る場合は、以下の様にアクセスします。
