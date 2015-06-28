@@ -86,6 +86,9 @@ word-vector-web-api/model 以下にコピーしたモデルファイルを解凍
     $ ls -al model
     -rw-rw-r--  1 overlast overlast  917846510  6月 28 11:27 2015 jawiki.20150602.neologd.bin
 
+####
+
+
 #### サンプルの実行例 (CentOS 上でインストールした場合)
 日本語 Wikipedia のダンプデータから決め打ちのパラメタで作成されたモデルをダウンロードして起動します。
 
@@ -95,10 +98,31 @@ word-vector-web-api/model 以下にコピーしたモデルファイルを解凍
 
 ## Word Vector Web API の実行結果の例
 ### mecab-ipadic-neologd をシステム辞書として使った場合
-    nyan (今書いてる)
+#### distance
+    '{"query": "LINE", "method": "distance", "format": "json", "total_count": 40, "items": [
+     {"term": "MORNING", "score": 0.59112554788589478},
+     {"term": "MUSIC", "score": 0.58910435438156128},
+     {"term": "SATURDAY", "score": 0.58483654260635376},
+     {"term": "POP", "score": 0.5823979377746582},
+     {"term": "SUNDAY", "score": 0.57760024070739746},
+    (略)
+    ], "status": "OK", "sort": "cosine similarity"}'
+
+#### analogy
+    '{"query": "原宿 クレープ 京都", "method": "analogy",
+     "format": "json", "total_count": 40, "items": [
+     {"term": "聖護院大根", "score": 0.4752272367477417},
+     {"term": "ペイストリー", "score": 0.46939295530319214},
+     {"term": "パンチェッタ", "score": 0.4637596607208252},
+     {"term": "ダンプリング", "score": 0.46223315596580505},
+     {"term": "和え", "score": 0.45975840091705322},
+    (略)
+    ], "status": "OK", "sort": "cosine similarity"}'
 
 #### どこに効果が出ている?
-    wan (今書いてる)
+    正直、Wikipedia のモデルは動作はするけど具体的な良さがあまり感じられないですね。
+
+    真面目に文書を集めてモデルを作るのがとても大切だなと心から感じます。
 
 ### 標準のシステム辞書(ipadic-2.7.0)を使った場合
     gaoh (今書いてる)
