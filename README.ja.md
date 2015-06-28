@@ -93,10 +93,10 @@ word-vector-web-api/model 以下にコピーしたモデルファイルを解凍
 
 このコマンドで立ち上がるプロセスは以下のポートを使います。
 
-|process name|port number|
-|nginx(master)|22670|
-|nginx(slave)|22671|
-|word2vec-message-pack-server|22676|
+| process name | port number |
+| nginx(master) | 22670 |
+| nginx(slave) | 22671 |
+| word2vec-message-pack-server | 22676 |
 
 #### Step4. サンプルモデルを使って Word Vector Web API を起動
 例えば、distance 相当の結果を得る場合は、以下の様にアクセスします。
