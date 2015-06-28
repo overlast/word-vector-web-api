@@ -63,10 +63,13 @@ word-vector-web-api を利用することで、様々なライブラリや資源
 
     $ ./bin/install-word-vector-web-api -h
 
-### word-vector-web-api の使用方法
+### word-vector-web-api の使用例
 word-vector-web-api を使いたいときは、自分の作成したいアプリケーションごとに conf ファイルをコピーして設定を調整して使うのが良いです。
 
-#### サンプルモデルのダウンロード
+以下では日本語 Wikipedia を使って作ったサンプルモデルを使ってデータを取得するための手順を書きます。
+
+#### Step1. サンプルモデルのダウンロード
+以下のモデルファイルをダウンロードして、word-vector-web-api/model 以下にコピーして下さい。
 
 - [jawiki.20150602.neologd.bin.xz (810MByte)](https://drive.google.com/file/d/0B5QYYyltotqfM2lRQ3l4Mkc5Mk0/view?usp=sharing)
     - 日本語 Wikipedia のdumpデータ(jawiki-latest-pages-articles.xml.bz2)から作成
@@ -74,6 +77,14 @@ word-vector-web-api を使いたいときは、自分の作成したいアプリ
         - http://wiki.apertium.org/wiki/Wikipedia_Extractor
     - 分かち書きに MeCab と mecab-ipadic-NEologd を使用
     - Word2Vec のパラメタは"-cbow 0 -size 300 -window 5 -negative 0 -hs 1 -sample 1e-5"
+
+#### Step2. サンプルモデルの解凍
+word-vector-web-api/model 以下にコピーしたモデルファイルを解凍します。
+
+    $ cd word-vector-web-api
+    $ unxz model/jawiki.20150602.neologd.bin.xz
+    $ ls -al model
+    -rw-rw-r--  1 overlast overlast  917846510  6月 28 11:27 2015 jawiki.20150602.neologd.bin
 
 #### サンプルの実行例 (CentOS 上でインストールした場合)
 日本語 Wikipedia のダンプデータから決め打ちのパラメタで作成されたモデルをダウンロードして起動します。
