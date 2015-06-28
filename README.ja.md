@@ -86,17 +86,33 @@ word-vector-web-api/model 以下にコピーしたモデルファイルを解凍
     $ ls -al model
     -rw-rw-r--  1 overlast overlast  917846510  6月 28 11:27 2015 jawiki.20150602.neologd.bin
 
-####
+#### Step3. サンプルモデルを使って Word Vector Web API を起動
+以下のコマンドでサンプルモデルを使った Word Vector Web API を起動できます。
 
+    $ libexec/boot-word-vector-web-api-sample.sh
 
-#### サンプルの実行例 (CentOS 上でインストールした場合)
-日本語 Wikipedia のダンプデータから決め打ちのパラメタで作成されたモデルをダウンロードして起動します。
+このコマンドで立ち上がるプロセスは以下のポートを使います。
 
-    $ cd word-vector-web-api
-    $ bin/get-ja-wikipedia-word-vector.sh (今書いてる)
-    $ bin/boot-word-vector-api.sh (今書いてる)
+    |process name|port number|
+    |nginx(master)|22670|
+    |nginx(slave)|22671|
+    |word2vec-message-pack-server|22676|
 
-## Word Vector Web API の実行結果の例
+#### Step4. サンプルモデルを使って Word Vector Web API を起動
+例えば、distance 相当の結果を得る場合は、以下の様にアクセスします。
+
+    $ wget "http://localhost:22670/distance?a1=タモリ" -o distance_tamori
+
+例えば、analogy 相当の結果を得る場合は、以下の様にアクセスします。
+
+    $ wget "http://localhost:22670/analogy?a1=神奈川&a2=横浜&a3=東京" -o analogy_kanagawa_yokohama_tokyo
+
+#### Step5. サンプルモデルを使った Word Vector Web API を停止
+以下のコマンドで Step3 で起動した Word Vector Web API を起動できます。
+
+    $ libexec/quit-word-vector-web-api-sample.sh
+
+## サンプルの実行例 (CentOS 上でインストールした場合)
 ### mecab-ipadic-neologd をシステム辞書として使った場合
 #### distance
     '{"query": "LINE", "method": "distance", "format": "json", "total_count": 40, "items": [
