@@ -28,9 +28,11 @@ RUN git clone https://github.com/msgpack-rpc/msgpack-rpc-cpp.git /root/git/msgpa
 RUN cd  /root/git/msgpack-rpc-cpp; ./bootstrap; ./configure; make; make install
 RUN /sbin/ldconfig
 
+# temporary directory
+RUN mkdir /root/tmp
+
 # waf
-RUN curl https://waf.io/waf-1.8.11 -o waf
-RUN mv /usr/local/bin/waf
+RUN cd /root/tmp; curl https://waf.io/waf-1.8.11 -o waf; cp /root/tmp/waf /usr/local/bin/waf
 RUN chmod 755 /usr/local/bin/waf
 
 #  msgpack-rpc-c
@@ -38,8 +40,6 @@ RUN git clone https://github.com/overlast/msgpack-rpc-c.git /root/git/msgpack-rp
 RUN cd /root/git/msgpack-rpc-c; waf configure; waf build; waf install
 RUN /sbin/ldconfig
 
-# temporary directory
-RUN mkdir /root/tmp
 
 # nginx-with-msgpack-rpc-module
 RUN git clone https://github.com/openresty/echo-nginx-module.git /root/git/echo-nginx-module
