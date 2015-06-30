@@ -14,13 +14,7 @@ RUN mkdir /root/git
 
 # msgpack-c
 RUN git clone https://github.com/msgpack/msgpack-c.git /root/git/msgpack-c
-RUN cd /root/git/msgpack-c
-RUN git checkout refs/tags/cpp-0.5.9
-RUN ./bootstrap
-RUN  ./configure
-RUN  make
-RUN  make install
-RUN /sbin/ldconfig
+RUN cd /root/git/msgpack-c; git checkout refs/tags/cpp-0.5.9; ./bootstrap; ./configure; make; make install; /sbin/ldconfig
 
 # mpio
 RUN yum -y install ruby
