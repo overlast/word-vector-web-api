@@ -46,7 +46,7 @@ RUN git clone https://github.com/openresty/echo-nginx-module.git /root/git/echo-
 RUN git clone https://github.com/overlast/nginx-msgpack-rpc-module.git /root/git/nginx-msgpack-rpc-module
 RUN curl http://nginx.org/download/nginx-1.8.0.tar.gz -o /root/tmp/nginx-1.8.0.tar.gz
 RUN cd /root/tmp; tar xfvz ./nginx-1.8.0.tar.gz
-RUN cd /root/tmp/nginx-1.8.0; ./configure --add-module=/root/git/echo-nginx-module --add-module=/root/git/nginx-msgpack-rpc-module --prefix=/usr/local/nginx-with-msgpack-rpc-module; /root/git/nginx-msgpack-rpc-module/bin/fix_makefile.pl ./objs/Makefile; make; make install
+RUN cd /root/tmp/nginx-1.8.0; ./configure --add-module=/root/git/echo-nginx-module --add-module=/root/git/nginx-msgpack-rpc-module --prefix=/usr/local/nginx-with-msgpack-rpc-module; /root/git/nginx-msgpack-rpc-module/bin/fix_makefile.pl /root/tmp/nginx-1.8.0/objs/Makefile; make; make install
 RUN /sbin/ldconfig
 
 # word2vec-msgpack-rpc-server
