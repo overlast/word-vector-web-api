@@ -42,6 +42,7 @@ RUN /sbin/ldconfig
 
 
 # nginx-with-msgpack-rpc-module
+RUN yum -y install pcre-devel
 RUN git clone https://github.com/openresty/echo-nginx-module.git /root/git/echo-nginx-module
 RUN git clone https://github.com/overlast/nginx-msgpack-rpc-module.git /root/git/nginx-msgpack-rpc-module
 RUN curl http://nginx.org/download/nginx-1.8.0.tar.gz -o /root/tmp/nginx-1.8.0.tar.gz
