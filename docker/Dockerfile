@@ -90,3 +90,18 @@ RUN go get github.com/voxelbrain/goptions
 RUN go get code.google.com/p/goauth2/oauth
 RUN git clone https://github.com/prasmussen/gdrive.git /root/git/gdrive
 RUN cd /root/git/gdrive; go build drive.go
+
+RUN cd /root/git/word-vector-web-api/model/; /root/git/gdrive/drive download --id 0B5QYYyltotqfM2lRQ3l4Mkc5Mk0
+RUN cd /root/git/word-vector-web-api/model/; unxz ./jawiki.20150602.neologd.bin.xz
+
+EXPOSE 22670
+EXPOSE 22671
+EXPOSE 22672
+EXPOSE 22673
+EXPOSE 22674
+EXPOSE 22675
+EXPOSE 22676
+EXPOSE 22677
+EXPOSE 22678
+EXPOSE 22679
+EXPOSE 22680
