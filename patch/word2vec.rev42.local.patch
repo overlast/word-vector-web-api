@@ -1,0 +1,208 @@
+--- ./word2vec.c.orig	2014-11-27 00:18:43.605973427 +0900
++++ ./word2vec.c	2014-11-27 00:16:58.784458652 +0900
+@@ -43,6 +43,7 @@ long long vocab_max_size = 1000, vocab_s
+ long long train_words = 0, word_count_actual = 0, iter = 5, file_size = 0, classes = 0;
+ real alpha = 0.025, starting_alpha, sample = 1e-3;
+ real *syn0, *syn1, *syn1neg, *expTable;
++size_t local_cache_size = 512 * 1024, local_cache_update = 100;
+ clock_t start;
+ 
+ int hs = 0, negative = 5;
+@@ -248,10 +249,10 @@ void CreateBinaryTree() {
+       if (b == vocab_size * 2 - 2) break;
+     }
+     vocab[a].codelen = i;
+-    vocab[a].point[0] = vocab_size - 2;
++    vocab[a].point[0] = 0;
+     for (b = 0; b < i; b++) {
+       vocab[a].code[i - b - 1] = code[b];
+-      vocab[a].point[i - b] = point[b] - vocab_size;
++      vocab[a].point[i - b] = vocab_size * 2 - 2 - point[b];
+     }
+   }
+   free(count);
+@@ -368,8 +369,34 @@ void *TrainModelThread(void *id) {
+   clock_t now;
+   real *neu1 = (real *)calloc(layer1_size, sizeof(real));
+   real *neu1e = (real *)calloc(layer1_size, sizeof(real));
++  size_t num_updates = 0;
++  size_t local_syn1_size = (size_t)(local_cache_size / (real)(layer1_size * sizeof(real)));
++  real *syn1_local = NULL, *syn1_diff = NULL, *syn1neg_local = NULL, *syn1neg_diff = NULL;
+   FILE *fi = fopen(train_file, "rb");
+   fseek(fi, file_size / (long long)num_threads * (long long)id, SEEK_SET);
++
++  if (0 < local_syn1_size) {
++    if (hs) {
++      a = posix_memalign((void **)&syn1_local, 128, (long long)local_syn1_size * layer1_size * sizeof(real));
++      if (syn1_local == NULL) {printf("Memory allocation failed\n"); exit(1);}
++      for (a = 0; a < local_syn1_size * layer1_size; a++)
++        syn1_local[a] = syn1[a];
++      a = posix_memalign((void **)&syn1_diff, 128, (long long)local_syn1_size * layer1_size * sizeof(real));
++      if (syn1_diff == NULL) {printf("Memory allocation failed\n"); exit(1);}
++      for (a = 0; a < local_syn1_size * layer1_size; a++)
++        syn1_diff[a] = 0;
++    }
++    if (negative>0) {
++      a = posix_memalign((void **)&syn1neg_local, 128, (long long)local_syn1_size * layer1_size * sizeof(real));
++      if (syn1neg_local == NULL) {printf("Memory allocation failed\n"); exit(1);}
++      for (a = 0; a < local_syn1_size * layer1_size; a++)
++        syn1neg_local[a] = syn1neg[a];
++      a = posix_memalign((void **)&syn1neg_diff, 128, (long long)local_syn1_size * layer1_size * sizeof(real));
++      if (syn1neg_diff == NULL) {printf("Memory allocation failed\n"); exit(1);}
++      for (a = 0; a < local_syn1_size * layer1_size; a++)
++        syn1neg_diff[a] = 0;
++    }
++  }
+   while (1) {
+     if (word_count - last_word_count > 10000) {
+       word_count_actual += word_count - last_word_count;
+@@ -434,22 +461,24 @@ void *TrainModelThread(void *id) {
+       if (cw) {
+         for (c = 0; c < layer1_size; c++) neu1[c] /= cw;
+         if (hs) for (d = 0; d < vocab[word].codelen; d++) {
++          real *_syn1 = (vocab[word].point[d] < local_syn1_size) ? syn1_local : syn1;
+           f = 0;
+           l2 = vocab[word].point[d] * layer1_size;
+           // Propagate hidden -> output
+-          for (c = 0; c < layer1_size; c++) f += neu1[c] * syn1[c + l2];
++          for (c = 0; c < layer1_size; c++) f += neu1[c] * _syn1[c + l2];
+           if (f <= -MAX_EXP) continue;
+           else if (f >= MAX_EXP) continue;
+           else f = expTable[(int)((f + MAX_EXP) * (EXP_TABLE_SIZE / MAX_EXP / 2))];
+           // 'g' is the gradient multiplied by the learning rate
+           g = (1 - vocab[word].code[d] - f) * alpha;
+           // Propagate errors output -> hidden
+-          for (c = 0; c < layer1_size; c++) neu1e[c] += g * syn1[c + l2];
++          for (c = 0; c < layer1_size; c++) neu1e[c] += g * _syn1[c + l2];
+           // Learn weights hidden -> output
+-          for (c = 0; c < layer1_size; c++) syn1[c + l2] += g * neu1[c];
++          for (c = 0; c < layer1_size; c++) _syn1[c + l2] += g * neu1[c];
+         }
+         // NEGATIVE SAMPLING
+         if (negative > 0) for (d = 0; d < negative + 1; d++) {
++          real *_syn1neg = NULL;
+           if (d == 0) {
+             target = word;
+             label = 1;
+@@ -460,14 +489,17 @@ void *TrainModelThread(void *id) {
+             if (target == word) continue;
+             label = 0;
+           }
++          _syn1neg = (target < (long long)local_syn1_size) ? syn1neg_local : syn1neg;
+           l2 = target * layer1_size;
+           f = 0;
+-          for (c = 0; c < layer1_size; c++) f += neu1[c] * syn1neg[c + l2];
++          for (c = 0; c < layer1_size; c++) f += neu1[c] * _syn1neg[c + l2];
+           if (f > MAX_EXP) g = (label - 1) * alpha;
+           else if (f < -MAX_EXP) g = (label - 0) * alpha;
+           else g = (label - expTable[(int)((f + MAX_EXP) * (EXP_TABLE_SIZE / MAX_EXP / 2))]) * alpha;
+-          for (c = 0; c < layer1_size; c++) neu1e[c] += g * syn1neg[c + l2];
+-          for (c = 0; c < layer1_size; c++) syn1neg[c + l2] += g * neu1[c];
++          for (c = 0; c < layer1_size; c++) neu1e[c] += g * _syn1neg[c + l2];
++          for (c = 0; c < layer1_size; c++) _syn1neg[c + l2] += g * neu1[c];
++          if (target < (long long)local_syn1_size)
++            for (c = 0; c < layer1_size; c++) syn1neg_diff[c + l2] += g * neu1[c];
+         }
+         // hidden -> in
+         for (a = b; a < window * 2 + 1 - b; a++) if (a != window) {
+@@ -490,22 +522,26 @@ void *TrainModelThread(void *id) {
+         for (c = 0; c < layer1_size; c++) neu1e[c] = 0;
+         // HIERARCHICAL SOFTMAX
+         if (hs) for (d = 0; d < vocab[word].codelen; d++) {
++          real *_syn1 = (vocab[word].point[d] < local_syn1_size) ? syn1_local : syn1;
+           f = 0;
+           l2 = vocab[word].point[d] * layer1_size;
+           // Propagate hidden -> output
+-          for (c = 0; c < layer1_size; c++) f += syn0[c + l1] * syn1[c + l2];
++          for (c = 0; c < layer1_size; c++) f += syn0[c + l1] * _syn1[c + l2];
+           if (f <= -MAX_EXP) continue;
+           else if (f >= MAX_EXP) continue;
+           else f = expTable[(int)((f + MAX_EXP) * (EXP_TABLE_SIZE / MAX_EXP / 2))];
+           // 'g' is the gradient multiplied by the learning rate
+           g = (1 - vocab[word].code[d] - f) * alpha;
+           // Propagate errors output -> hidden
+-          for (c = 0; c < layer1_size; c++) neu1e[c] += g * syn1[c + l2];
++          for (c = 0; c < layer1_size; c++) neu1e[c] += g * _syn1[c + l2];
+           // Learn weights hidden -> output
+-          for (c = 0; c < layer1_size; c++) syn1[c + l2] += g * syn0[c + l1];
++          for (c = 0; c < layer1_size; c++) _syn1[c + l2] += g * syn0[c + l1];
++          if (vocab[word].point[d] < local_syn1_size)
++            for (c = 0; c < layer1_size; c++) syn1_diff[c + l2] += g * syn0[c + l1];
+         }
+         // NEGATIVE SAMPLING
+         if (negative > 0) for (d = 0; d < negative + 1; d++) {
++          real *_syn1neg = NULL;
+           if (d == 0) {
+             target = word;
+             label = 1;
+@@ -516,14 +552,17 @@ void *TrainModelThread(void *id) {
+             if (target == word) continue;
+             label = 0;
+           }
++          _syn1neg = (target < local_syn1_size) ? syn1neg_local : syn1neg;
+           l2 = target * layer1_size;
+           f = 0;
+-          for (c = 0; c < layer1_size; c++) f += syn0[c + l1] * syn1neg[c + l2];
++          for (c = 0; c < layer1_size; c++) f += syn0[c + l1] * _syn1neg[c + l2];
+           if (f > MAX_EXP) g = (label - 1) * alpha;
+           else if (f < -MAX_EXP) g = (label - 0) * alpha;
+           else g = (label - expTable[(int)((f + MAX_EXP) * (EXP_TABLE_SIZE / MAX_EXP / 2))]) * alpha;
+-          for (c = 0; c < layer1_size; c++) neu1e[c] += g * syn1neg[c + l2];
+-          for (c = 0; c < layer1_size; c++) syn1neg[c + l2] += g * syn0[c + l1];
++          for (c = 0; c < layer1_size; c++) neu1e[c] += g * _syn1neg[c + l2];
++          for (c = 0; c < layer1_size; c++) _syn1neg[c + l2] += g * syn0[c + l1];
++          if (target < local_syn1_size)
++            for (c = 0; c < layer1_size; c++) syn1neg_diff[c + l2] += g * syn0[c + l1];
+         }
+         // Learn weights input -> hidden
+         for (c = 0; c < layer1_size; c++) syn0[c + l1] += neu1e[c];
+@@ -534,8 +573,32 @@ void *TrainModelThread(void *id) {
+       sentence_length = 0;
+       continue;
+     }
++    num_updates++;
++    if (local_cache_update <= num_updates) {
++      if (hs) {
++        for (a = 0; a < local_syn1_size * layer1_size; a++)
++          syn1[a] += syn1_diff[a];
++        for (a = 0; a < local_syn1_size * layer1_size; a++)
++          syn1_local[a] = syn1[a];
++        for (a = 0; a < local_syn1_size * layer1_size; a++)
++          syn1_diff[a] = 0;
++      }
++      if (negative > 0) {
++        for (a = 0; a < local_syn1_size * layer1_size; a++)
++          syn1neg[a] += syn1neg_diff[a];
++        for (a = 0; a < local_syn1_size * layer1_size; a++)
++          syn1neg_local[a] = syn1neg[a];
++        for (a = 0; a < local_syn1_size * layer1_size; a++)
++          syn1neg_diff[a] = 0;
++      }
++      num_updates = 0;
++    }
+   }
+   fclose(fi);
++  free(syn1neg_diff);
++  free(syn1neg_local);
++  free(syn1_diff);
++  free(syn1_local);
+   free(neu1);
+   free(neu1e);
+   pthread_exit(NULL);
+@@ -649,6 +712,8 @@ int main(int argc, char **argv) {
+     printf("\t\tUse <int> threads (default 12)\n");
+     printf("\t-iter <int>\n");
+     printf("\t\tRun more training iterations (default 5)\n");
++    printf("\t-cache-update <int>\n");
++    printf("\t\tSynchronize after <int> updates (default 100)\n");
+     printf("\t-min-count <int>\n");
+     printf("\t\tThis will discard words that appear less than <int> times; default is 5\n");
+     printf("\t-alpha <float>\n");
+@@ -688,6 +753,7 @@ int main(int argc, char **argv) {
+   if ((i = ArgPos((char *)"-negative", argc, argv)) > 0) negative = atoi(argv[i + 1]);
+   if ((i = ArgPos((char *)"-threads", argc, argv)) > 0) num_threads = atoi(argv[i + 1]);
+   if ((i = ArgPos((char *)"-iter", argc, argv)) > 0) iter = atoi(argv[i + 1]);
++  if ((i = ArgPos((char *)"-cache-update", argc, argv)) > 0) local_cache_update = atoi(argv[i + 1]);
+   if ((i = ArgPos((char *)"-min-count", argc, argv)) > 0) min_count = atoi(argv[i + 1]);
+   if ((i = ArgPos((char *)"-classes", argc, argv)) > 0) classes = atoi(argv[i + 1]);
+   vocab = (struct vocab_word *)calloc(vocab_max_size, sizeof(struct vocab_word));
