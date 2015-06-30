@@ -32,7 +32,7 @@ else
     echo "${ECHO_PREFIX} Check out from googlecode.."
     svn checkout http://word2vec.googlecode.com/svn/trunk/ word2vec
     echo "${ECHO_PREFIX} Fix word2vec.c using patch.."
-    patch $BASEDIR/../word2vec/word2vec.c  < $BASEDIR/../patch/word2vec.rev38.local.patch
+    patch $BASEDIR/../word2vec/word2vec.c  < $BASEDIR/../patch/word2vec.rev42.local.patch
     echo "${ECHO_PREFIX} Fix C++ optimal option.."
     sed -i -e "s/-OFast/-O3/g" $BASEDIR/../word2vec/makefile
     cd $BASEDIR/../word2vec/
