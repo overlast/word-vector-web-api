@@ -98,6 +98,6 @@ EXPOSE 22678
 EXPOSE 22679
 EXPOSE 22680
 
-CMD /usr/local/bin/word2vec-msgpack-rpc-server -m /var/tmp/sample-word-vector-web-api/jawiki.20150602.neologd.bin -p 22676  > /dev/null 2>&1 &
-CMD /usr/local/nginx-with-msgpack-rpc-module/sbin/nginx -c /root/git/word-vector-web-api/conf/sample-word-vector-web-api-slave1.conf
-CMD /usr/local/nginx-with-msgpack-rpc-module/sbin/nginx -c /root/git/word-vector-web-api/conf/sample-word-vector-web-api-master-solo.conf
+CMD ["/usr/local/bin/word2vec-msgpack-rpc-server", "-m", "/var/tmp/sample-word-vector-web-api/jawiki.20150602.neologd.bin", "-p", "22676", ">", "/dev/null", "2>&1", "&"]
+CMD ["/usr/local/nginx-with-msgpack-rpc-module/sbin/nginx", "-c", "/root/git/word-vector-web-api/conf/sample-word-vector-web-api-slave1.conf"]
+CMD ["/usr/local/nginx-with-msgpack-rpc-module/sbin/nginx", "-c", "/root/git/word-vector-web-api/conf/sample-word-vector-web-api-master-solo.conf"]
