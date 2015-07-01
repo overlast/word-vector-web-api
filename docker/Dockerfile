@@ -67,7 +67,7 @@ RUN /sbin/ldconfig
 RUN curl -L "https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7MWVlSDBCSXZMTXM" -o /root/tmp/mecab-ipadic-2.7.0-20070801.tar.gz
 RUN cd /root/tmp/;tar xfvz mecab-ipadic-2.7.0-20070801.tar.gz
 RUN cd /root/tmp/mecab-ipadic-2.7.0-20070801; ./configure --with-charset=utf8; make; make install
-
+q
 # mecab-ipadic-neologd
 RUN yum -y install patch which xz file
 RUN git clone https://github.com/neologd/mecab-ipadic-neologd.git /root/git/mecab-ipadic-neologd
@@ -92,7 +92,7 @@ ENV GOPATH /root/go; go get github.com/prasmussen/gdrive/cli
 RUN go get github.com/voxelbrain/goptions
 RUN go get code.google.com/p/goauth2/oauth
 RUN git clone https://github.com/prasmussen/gdrive.git /root/git/gdrive
-ENV GOPATH /root/go; go build -v /root/git/gdrive/drive.go -o /root/git/gdrive/drive
+RUN cd /root/git/gdrive/; GOPATH=/root/go go build -v /root/git/gdrive/drive.go
 
 RUN cd /root/git/word-vector-web-api/model/; ls -al /root/git/gdrive/; /root/git/gdrive/drive download --id 0B5QYYyltotqfM2lRQ3l4Mkc5Mk0
 RUN cd /root/git/word-vector-web-api/model/; unxz ./jawiki.20150602.neologd.bin.xz
