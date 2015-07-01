@@ -82,7 +82,7 @@ RUN yum -y install svn
 RUN svn checkout http://word2vec.googlecode.com/svn/trunk/ /root/git/word-vector-web-api/word2vec
 RUN patch /root/git/word-vector-web-api/word2vec/word2vec.c < /root/git/word-vector-web-api/patch/word2vec.rev42.local.patch;
 RUN sed -i -e "s/-OFast/-O3/g" /root/git/word-vector-web-api/word2vec/makefile;
-RUN cd /root/git/word-vector-web-api/word2vec/make
+RUN cd /root/git/word-vector-web-api/word2vec/; make
 
 # model directory
 RUN mkdir /root/git/word-vector-web-api/model
