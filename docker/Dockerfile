@@ -75,7 +75,7 @@ RUN cd  /root/git/mecab-ipadic-neologd; ./bin/install-mecab-ipadic-neologd -n -y
 
 # word-vector-web-api
 RUN git clone https://github.com/overlast/word-vector-web-api /root/git/word-vector-web-api
- ln -s /root/git/word-vector-web-api/www /usr/local/nginx-with-msgpack-rpc-module/www
+RUN ln -s /root/git/word-vector-web-api/www /usr/local/nginx-with-msgpack-rpc-module/www
 
 # word2vec on word-vector-web-api
 RUN yum -y install svn
