@@ -41,6 +41,7 @@ RUN git clone https://github.com/overlast/msgpack-rpc-c.git /root/git/msgpack-rp
 RUN cd /root/git/msgpack-rpc-c; waf configure; waf build; waf install
 RUN /sbin/ldconfig
 
+
 # nginx-with-msgpack-rpc-module
 RUN yum -y install pcre-devel
 RUN git clone https://github.com/openresty/echo-nginx-module.git /root/git/echo-nginx-module
@@ -68,6 +69,9 @@ RUN /sbin/ldconfig
 RUN curl -L "https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7MWVlSDBCSXZMTXM" -o /root/tmp/mecab-ipadic-2.7.0-20070801.tar.gz
 RUN cd /root/tmp/;tar xfvz mecab-ipadic-2.7.0-20070801.tar.gz
 RUN cd /root/tmp/mecab-ipadic-2.7.0-20070801; ./configure --with-charset=utf8; make; make install
+
+# commands
+RUN yum -y install patch which xz file
 
 # word-vector-web-api
 RUN git clone https://github.com/overlast/word-vector-web-api /root/git/word-vector-web-api
