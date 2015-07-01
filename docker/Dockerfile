@@ -92,7 +92,7 @@ ENV GOPATH /root/go; go get github.com/prasmussen/gdrive/cli
 RUN go get github.com/voxelbrain/goptions
 RUN go get code.google.com/p/goauth2/oauth
 RUN git clone https://github.com/prasmussen/gdrive.git /root/git/gdrive
-ENV GOPATH /root/go; cd /root/git/gdrive; go build /root/git/gdrive/drive.go -o /root/git/gdrive/drive
+ENV GOPATH /root/go; go build /root/git/gdrive/drive.go -o /root/git/gdrive/drive
 
 RUN cd /root/git/word-vector-web-api/model/; ls -al /root/git/gdrive/; /root/git/gdrive/drive download --id 0B5QYYyltotqfM2lRQ3l4Mkc5Mk0
 RUN cd /root/git/word-vector-web-api/model/; unxz ./jawiki.20150602.neologd.bin.xz
