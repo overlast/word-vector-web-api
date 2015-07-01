@@ -80,7 +80,7 @@ RUN ln -s /root/git/word-vector-web-api/www /usr/local/nginx-with-msgpack-rpc-mo
 # word2vec on word-vector-web-api
 RUN yum -y install svn
 RUN svn checkout http://word2vec.googlecode.com/svn/trunk/ /root/git/word-vector-web-api/word2vec
-RUN cd /root/git/word-vector-web-api; patch ./word2vec/word2vec.c < patch/word2vec.rev42.local.patch; sed -i -e "s/-OFast/-O3/g" ./word2vec/makefile; make
+RUN cd /root/git/word-vector-web-api; patch /root/git/word-vector-web-api/word2vec/word2vec.c < /root/git/word-vector-web-api/patch/word2vec.rev42.local.patch; sed -i -e "s/-OFast/-O3/g" /root/git/word-vector-web-api/word2vec/makefile; make
 
 # model directory
 RUN mkdir /root/git/word-vector-web-api/model
