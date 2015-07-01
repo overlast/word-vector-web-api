@@ -2,6 +2,7 @@ FROM centos:centos6
 MAINTAINER Toshinori Sato <@overlast>
 
 RUN yum -y update
+RUN yum clean
 RUN yum -y install gcc  gcc-c++ automake libtool git tar openssl openssl-devel
 
 # local ldconfig
