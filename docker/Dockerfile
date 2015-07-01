@@ -94,7 +94,7 @@ RUN go get code.google.com/p/goauth2/oauth
 RUN git clone https://github.com/prasmussen/gdrive.git /root/git/gdrive
 ENV GOPATH /root/go; cd /root/git/gdrive; go build drive.go
 
-RUN cd /root/git/word-vector-web-api/model/; /root/git/gdrive/drive download --id 0B5QYYyltotqfM2lRQ3l4Mkc5Mk0
+RUN cd /root/git/word-vector-web-api/model/; /root/git/gdrive/gdrive download --id 0B5QYYyltotqfM2lRQ3l4Mkc5Mk0
 RUN cd /root/git/word-vector-web-api/model/; unxz ./jawiki.20150602.neologd.bin.xz
 
 EXPOSE 22670
