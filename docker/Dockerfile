@@ -32,7 +32,7 @@ RUN /sbin/ldconfig
 RUN mkdir /root/tmp
 
 # waf
-RUN cd /root/tmp; curl https://waf.io/waf-1.8.11 -o waf; cp /root/tmp/waf /usr/local/bin/waf
+RUN curl https://waf.io/waf-1.8.11 -o /root/tmp/waf; cp /root/tmp/waf /usr/local/bin/waf
 RUN chmod 755 /usr/local/bin/waf
 
 #  msgpack-rpc-c
