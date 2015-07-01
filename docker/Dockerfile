@@ -90,7 +90,7 @@ RUN mkdir /root/git/word-vector-web-api/model
 RUN yum install -y go hg
 ENV GOPATH /root/go; go get github.com/prasmussen/gdrive/cli
 RUN go get github.com/voxelbrain/goptions
-RUN go code.google.com/p/goauth2/oauth
+RUN go get code.google.com/p/goauth2/oauth
 RUN git clone https://github.com/prasmussen/gdrive.git /root/git/gdrive
 RUN cd /root/git/gdrive; GOPATH=$HOME/go go build drive.go
 
