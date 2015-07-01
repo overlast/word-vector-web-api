@@ -69,7 +69,7 @@ RUN cd /root/tmp/;tar xfvz mecab-ipadic-2.7.0-20070801.tar.gz
 RUN cd /root/tmp/mecab-ipadic-2.7.0-20070801; ./configure --with-charset=utf8; make; make install
 
 # mecab-ipadic-neologd
-#RUN yum -y install patch which xz file
+RUN yum -y install patch which xz file
 #RUN git clone https://github.com/neologd/mecab-ipadic-neologd.git /root/git/mecab-ipadic-neologd
 #RUN cd  /root/git/mecab-ipadic-neologd; ./bin/install-mecab-ipadic-neologd -n -y -u
 
