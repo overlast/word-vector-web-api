@@ -52,8 +52,8 @@ RUN /sbin/ldconfig
 
 # word2vec-msgpack-rpc-server
 RUN curl http://ftp-srv2.kddilabs.jp/Linux/distributions/fedora/epel/6/x86_64/epel-release-6-8.noarch.rpm -o /root/tmp/epel-release-6-8.noarch.rpm
-RUN rpm -ivh /root/tmp/epel-release-6-8.noarch.rpm
-RUN yum -y install jansson jansson-devel
+RUN yum install epel-release
+RUN yum --enablerepo=epel -y install jansson jansson-devel
 RUN git clone https://github.com/overlast/word2vec-msgpack-rpc-server /root/git/word2vec-msgpack-rpc-server
 RUN cd /root/git/word2vec-msgpack-rpc-server; waf configure; waf build; waf install
 
