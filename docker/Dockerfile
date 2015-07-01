@@ -41,7 +41,6 @@ RUN git clone https://github.com/overlast/msgpack-rpc-c.git /root/git/msgpack-rp
 RUN cd /root/git/msgpack-rpc-c; waf configure; waf build; waf install
 RUN /sbin/ldconfig
 
-
 # nginx-with-msgpack-rpc-module
 RUN yum -y install pcre-devel
 RUN git clone https://github.com/openresty/echo-nginx-module.git /root/git/echo-nginx-module
@@ -70,11 +69,6 @@ RUN curl -L "https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7MWVlSDB
 RUN cd /root/tmp/;tar xfvz mecab-ipadic-2.7.0-20070801.tar.gz
 RUN cd /root/tmp/mecab-ipadic-2.7.0-20070801; ./configure --with-charset=utf8; make; make install
 
-# mecab-ipadic-neologd
-RUN yum -y install patch which xz file
-#RUN git clone https://github.com/neologd/mecab-ipadic-neologd.git /root/git/mecab-ipadic-neologd
-#RUN cd  /root/git/mecab-ipadic-neologd; ./bin/install-mecab-ipadic-neologd -n -y -u
-
 # word-vector-web-api
 RUN git clone https://github.com/overlast/word-vector-web-api /root/git/word-vector-web-api
 RUN ln -s /root/git/word-vector-web-api/www /usr/local/nginx-with-msgpack-rpc-module/www
@@ -98,6 +92,4 @@ EXPOSE 22678
 EXPOSE 22679
 EXPOSE 22680
 
-CMD ["/usr/local/bin/word2vec-msgpack-rpc-server", "-m", "/var/tmp/sample-word-vector-web-api/jawiki.20150602.neologd.bin", "-p", "22676", ">", "/dev/null", "2>&1", "&"]
-CMD ["/usr/local/nginx-with-msgpack-rpc-module/sbin/nginx", "-c", "/root/git/word-vector-web-api/conf/sample-word-vector-web-api-slave1.conf"]
-CMD ["/usr/local/nginx-with-msgpack-rpc-module/sbin/nginx", "-c", "/root/git/word-vector-web-api/conf/sample-word-vector-web-api-master-solo.conf"]
+ENTRYPOINT /root/git/word-vector-web-api/libexec/boot-word-vector-web-api-sample-1-slave.sh
