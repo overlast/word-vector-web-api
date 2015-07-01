@@ -67,7 +67,7 @@ RUN /sbin/ldconfig
 RUN curl -L "https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7MWVlSDBCSXZMTXM" -o /root/tmp/mecab-ipadic-2.7.0-20070801.tar.gz
 RUN cd /root/tmp/;tar xfvz mecab-ipadic-2.7.0-20070801.tar.gz
 RUN cd /root/tmp/mecab-ipadic-2.7.0-20070801; ./configure --with-charset=utf8; make; make install
-q
+
 # mecab-ipadic-neologd
 RUN yum -y install patch which xz file
 RUN git clone https://github.com/neologd/mecab-ipadic-neologd.git /root/git/mecab-ipadic-neologd
