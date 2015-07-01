@@ -88,10 +88,9 @@ RUN cd /root/git/word-vector-web-api/word2vec/; make
 RUN mkdir /root/git/word-vector-web-api/model
 # sample model downloader
 RUN yum install -y go hg
-RUN export GOPATH=$HOME/go
-RUN go get github.com/prasmussen/gdrive/cli
-RUN go get github.com/voxelbrain/goptions
-RUN go get code.google.com/p/goauth2/oauth
+RUN export GOPATH=$HOME/go; go get github.com/prasmussen/gdrive/cli
+RUN export GOPATH=$HOME/go; go get github.com/voxelbrain/goptions
+RUN export GOPATH=$HOME/go; go get code.google.com/p/goauth2/oauth
 RUN git clone https://github.com/prasmussen/gdrive.git /root/git/gdrive
 RUN cd /root/git/gdrive; go build drive.go
 
