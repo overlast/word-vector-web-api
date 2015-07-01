@@ -50,6 +50,7 @@ RUN curl http://nginx.org/download/nginx-1.8.0.tar.gz -o /root/tmp/nginx-1.8.0.t
 RUN cd /root/tmp; tar xfvz ./nginx-1.8.0.tar.gz
 RUN cd /root/tmp/nginx-1.8.0; ./configure --add-module=/root/git/echo-nginx-module --add-module=/root/git/nginx-msgpack-rpc-module --prefix=/usr/local/nginx-with-msgpack-rpc-module; /root/git/nginx-msgpack-rpc-module/bin/fix_makefile.pl /root/tmp/nginx-1.8.0/objs/Makefile; make; make install
 RUN /sbin/ldconfig
+RUN mkdir -p /var/cache/nginx/cache
 
 # word2vec-msgpack-rpc-server
 RUN curl http://ftp-srv2.kddilabs.jp/Linux/distributions/fedora/epel/6/x86_64/epel-release-6-8.noarch.rpm -o /root/tmp/epel-release-6-8.noarch.rpm
@@ -97,8 +98,6 @@ EXPOSE 22678
 EXPOSE 22679
 EXPOSE 22680
 
-CMD ls -al /var/tmp/sample-word-vector-web-api/jawiki.20150602.neologd.bin
 CMD /usr/local/bin/word2vec-msgpack-rpc-server -m /var/tmp/sample-word-vector-web-api/jawiki.20150602.neologd.bin -p 22676  > /dev/null 2>&1 &
-CMD mkdir -p /var/cache/nginx/cache
 CMD /usr/local/nginx-with-msgpack-rpc-module/sbin/nginx -c /root/git/word-vector-web-api/conf/sample-word-vector-web-api-slave1.conf
 CMD /usr/local/nginx-with-msgpack-rpc-module/sbin/nginx -c /root/git/word-vector-web-api/conf/sample-word-vector-web-api-master-solo.conf
