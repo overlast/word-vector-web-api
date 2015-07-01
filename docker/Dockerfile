@@ -88,11 +88,11 @@ RUN cd /root/git/word-vector-web-api/word2vec/; make
 RUN mkdir /root/git/word-vector-web-api/model
 # sample model downloader
 RUN yum install -y go hg
-RUN export GOPATH=$HOME/go; go get github.com/prasmussen/gdrive/cli
-RUN export GOPATH=$HOME/go; go get github.com/voxelbrain/goptions
-RUN export GOPATH=$HOME/go; go get code.google.com/p/goauth2/oauth
+RUN GOPATH=$HOME/go go get github.com/prasmussen/gdrive/cli
+RUN GOPATH=$HOME/go go get github.com/voxelbrain/goptions
+RUN GOPATH=$HOME/go go get code.google.com/p/goauth2/oauth
 RUN git clone https://github.com/prasmussen/gdrive.git /root/git/gdrive
-RUN cd /root/git/gdrive; go build drive.go
+RUN cd /root/git/gdrive; GOPATH=$HOME/go go build drive.go
 
 RUN cd /root/git/word-vector-web-api/model/; /root/git/gdrive/drive download --id 0B5QYYyltotqfM2lRQ3l4Mkc5Mk0
 RUN cd /root/git/word-vector-web-api/model/; unxz ./jawiki.20150602.neologd.bin.xz
