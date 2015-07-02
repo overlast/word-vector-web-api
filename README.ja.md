@@ -9,16 +9,19 @@ word-vector-web-api を利用することで、様々なライブラリや資源
 ### 利点
 - Web API なので結果所得はどのようなプログラミング言語からでも可能
 - 結果取得時に JSONP を指定すれば、フロントエンドからの結果取得・可視化も可能
-- 結果のキャッシュが可能
-    - nginx でおこなっている
+- HTTP サーバに nginx を使っており、処理結果がキャッシュされる
 - 割と高速、割と省メモリ
     - モデルの読み込み、検索は C++ のサーバでおこなっている
+- Dockerfile が用意されている
+    - アプリケーションごとに ENDPOINT に使うスクリプトを改変して image を作り直せばよい
 
 ### 欠点
-- まだ Linux にしか対応していない
-    - いま OSX に対応する作業をしているところです。
+-
 
 ## 使用開始
+
+
+
 ### 動作に必要なもの
 
 インストール時に以下のライブラリを順にインストールします。
@@ -26,9 +29,6 @@ word-vector-web-api を利用することで、様々なライブラリや資源
 - [nginx-1.8.0](http://nginx.org/) (独自のディレクトリにインストールされます)
 - [nginx-msgpack-rpc-module](https://github.com/overlast/nginx-msgpack-rpc-module)
 - [word2vec-msgpack-rpc-server](https://github.com/overlast/word2vec-msgpack-rpc-server)
-- [MeCab](http://taku910.github.io/mecab/)
-- [mecab-ipadic](http://taku910.github.io/mecab/#download)
-- [mecab-ipadic-NEologd](https://github.com/neologd/mecab-ipadic-neologd)
 - [Word2Vec](http://code.google.com/p/word2vec/) (word-vector-web-api ディレクトリ内にインストールされます)
 
 動作に必要なものは、上記ライブラリのインストール時に必要としている資源やライブラリです。
@@ -180,6 +180,19 @@ slave の nginx プロセスを複数立ち上げたいときは nginx.conf を�
 
 ### 標準のシステム辞書(ipadic-2.7.0)を使った場合
     gaoh (今書いてる)
+
+## word-vector-web-api を通じて主張したいこと
+研究的な実装を C/C++ で実装して [word2vec-msgpack-rpc-server](https://github.com/overlast/word2vec-msgpack-rpc-server) と同様に msgpack-rpc-server 化すれば、LL 言語で下手な実装をするより省メモリで高速な実装を各言語の MessagePack-RPC モジュール経由で利用できる。
+
+MessagePack-RPC は依存ライブラリが少なく、他のプロトコルに無い柔軟性があるので、研究的なものづくりに向いている。
+
+また、選択したプログラミング言語によるメモリの無駄が少ないことは、発明された新しい技術が実応用されるうえでとても重要である。
+
+さらに、その実装を Web API 化する場合、[nginx-msgpack-rpc-module](https://github.com/overlast/nginx-msgpack-rpc-module) を利用すれば nginx の設定ファイルを書き換えるだけで msgpack-rpc-client と HTTP Server の用意が終わる。
+
+研究的な実装を一般のエンジニアに試してもらうには、Web API にリクエストして結果の JSON を見せるのが、個人的な経験上だは一番早いのでオススメである。
+
+何か有益なものを実装するときは、Python ではなく C/C++ で実装し、更に Web API 化することで、最終的により広い範囲の研究者やエンジニアがユーザになるだろう。
 
 ## 今後の発展
 継続して開発しますので、気になるところはどんどん改善されます。
