@@ -301,6 +301,21 @@ Step3 でコンテナの起動に成功している場合、curl や ブラウ�
 
 API 自体の詳しい説明は以降の「word-vector-web-api の使い方」の節に書きます。
 
+### Step5. Docker コンテナの停止
+試し終わった後の Docker コンテナの停止は docker stop を使います。
+
+最初にコンテナのIDを調べます。
+
+    $ docker ps
+    CONTAINER ID        IMAGE                                 COMMAND                CREATED             STATUS              PORTS                                       NAMES
+    0077aef0e71a        sample-word-vector-web-api-s1:0.0.1   "/bin/sh -c /root/gi   58 seconds ago      Up 42 seconds       22671-22680/tcp, 0.0.0.0:23670->22670/tcp   stoic_turing
+
+ID が分かったら docker stop <CONTAINER ID> と指定します。
+
+    $ docker stop 0077aef0e71a
+
+これでコンテナは停止し破棄されます。
+
 ## 使用例2. 計算機に直にインストールする
 個人的にはこの使い方がオススメです。
 
