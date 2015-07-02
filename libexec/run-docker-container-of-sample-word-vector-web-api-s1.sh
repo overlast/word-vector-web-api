@@ -23,7 +23,6 @@ BASEDIR=$(cd $(dirname $0);pwd)
 SCRIPT_NAME="[run-docker-container-of-sample-word-vector-web-api-s1] :"
 HOST_PORT=22670
 
-echo "${SCRIPT_NAME} Start.."
 
 for OPT in "$@"
 do
@@ -36,17 +35,11 @@ do
             fi
             HOST_PORT="$2"
             shift 2
+            break
             ;;
         -*)
             echo "${SCRIPT_NAME}: illegal option -- '$(echo $1 | sed 's/^-*//')'" 1>&2
             exit 1
-            ;;
-        *)
-            if [[ ! -z "$1" ]] && [[ ! "$1" =~ ^-+ ]]; then
-                #param=( ${param[@]} "$1" )
-                param+=( "$1" )
-                shift 1
-            fi
             ;;
     esac
 done
