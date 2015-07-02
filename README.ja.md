@@ -127,7 +127,7 @@ word-vector-web-api を利用することで、様々なライブラリや資源
 
 Docker の build には以下のコマンドを使います。
 
-    $ libexec/create-docker-image-sample-word-vector-web-api-s1.sh
+    $ ./libexec/create-docker-image-sample-word-vector-web-api-s1.sh
 
 もしも最後まで処理がうまくいった場合は、以下の様なメッセージが表示されます。
 
@@ -143,7 +143,8 @@ Docker の build には以下のコマンドを使います。
 
 ネットワーク環境に若干左右されるみたいなので、何度か時間を変えて実行してみてください。または以下のようにして一回作成中の image を消してリトライして下さい。
 
-    $ $docker rmi -f sample-word-vector-web-api-s1:0.0.1
+    $ docker rmi -f sample-word-vector-web-api-s1:0.0.1
+    $ ./libexec/create-docker-image-sample-word-vector-web-api-s1.sh
 
 できあがった image は以下のコマンドで確認できます。
 
