@@ -42,7 +42,11 @@ word-vector-web-api を利用することで、様々なライブラリや資源
 
 #### OSX
 - [boot2docker](http://boot2docker.io/)
-    - パッケージをインストールする
+    - パッケージをインストールして、しておいて下さい
+        - $ boot2docker init
+        - $ boot2docker start
+        - $ eval "$(boot2docker shellinit)"
+            - shellinit すると dock
 
 - Docker と boot2docker に関する知識
     - boot2docker を使って CentOS の docker image を pull して run できる程度に
