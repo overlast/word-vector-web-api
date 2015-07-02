@@ -24,7 +24,7 @@ word-vector-web-api を利用することで、様々なライブラリや資源
 
 - (登録していない場合) epel リポジトリ
 
-$ sudo yum -y clean all
+    $ sudo yum -y clean all
 
     $ sudo yum -y install epel-release
 
@@ -37,8 +37,8 @@ $ sudo yum -y clean all
 - Docker に関する知識
     - docker コマンドで CentOS の docker image を pull して run できる程度に
 
-- Google アカウント
-    - サンプルモデルのダウンロードに必要です
+- Google のアカウント
+    - Google Drive からサンプルモデルをダウンロードするために必要です
 
 #### OSX
 - [boot2docker](http://boot2docker.io/)
@@ -47,28 +47,67 @@ $ sudo yum -y clean all
 - Docker と boot2docker に関する知識
     - boot2docker を使って CentOS の docker image を pull して run できる程度に
 
-- Google アカウント
-    - サンプルモデルのダウンロードに必要です
+- Google のアカウント
+    - Google Drive からサンプルモデルをダウンロードするために必要です
 
 ### 手順
 #### Step1. サンプルモデルの入手
 はじめに以下のコマンドを実行してサンプルモデル(約 800 MByte)を Google Drive からダウンロードします。
 
-    $
+    $ ./libexec/download-sample-jawiki-model.sh
 
 上記で実行したスクリプトは、golang で実装された drive コマンドのコンパイルと、それを使った Google Drive に対するリクエストを行います。
 
-うまくいくと、Google Drive からのダウンロードに必要な確認作業のための URL が表示されます。
+たとえば以下の様な出力が表示されます。
+
+    $./libexec/download-sample-jawiki-model.sh
+    [sample-model-downloader] : Start..
+    [sample-model-downloader] : Linux is supported
+    [sample-model-downloader] : Install go and hg
+    読み込んだプラグイン:fastestmirror, priorities, security
+    インストール処理の設定をしています
+    Loading mirror speeds from cached hostfile
+    * base: www.ftp.ne.jp
+    * epel: ftp.kddilabs.jp
+    * extras: www.ftp.ne.jp
+    * rpmforge: ftp.kddilabs.jp
+    * updates: www.ftp.ne.jp
+    169 packages excluded due to repository priority protections
+    パッケージ golang-1.4.2-2.el6.x86_64 はインストール済みか最新バージョンです
+    パッケージ mercurial-1.4-3.el6.x86_64 はインストール済みか最新バージョンです
+    何もしません
+    [sample-model-downloader] : go get github.com/prasmussen/gdrive/cli
+    [sample-model-downloader] : go get github.com/voxelbrain/goptions
+    [sample-model-downloader] : go get code.google.com/p/goauth2/oauth
+    [sample-model-downloader] : git clone https://github.com/prasmussen/gdrive.git
+    [sample-model-downloader] : cd /home/overlast/git/word-vector-web-api/libexec/../tmp/gdrive
+    Already up-to-date.
+    [sample-model-downloader] : Compile drive.go to create Google Drive CLI application
+    command-line-arguments
+    [sample-model-downloader] : cd /home/overlast/git/word-vector-web-api/libexec/../model/
+
+うまくいくと、初めてdrive コマンドでモデルをダウンロードする場合には、 Google Drive からのダウンロードに必要な確認作業のための URL が表示されます。
+
+    [sample-model-downloader] : Download sample model data file from Google Drive using drive command
+    Go to the following link in your browser:
+    https://accounts.google.com/o/oauth2/auth?client_id=367116221053-7n0vf5akeru7on6o2fjinrecpdoe99eg.apps.googleusercontent.com&redirect_uri=urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob&response_type=code&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive&state=state
+
+    Enter verification code:
 
 この URL にブラウザでアクセスして、同意画面で同意して、確認用の token を得たら、以下のようにコピペします。
 
-    $
+    Enter verification code: 4/m62RCGf0d81HV5sooL*********************
 
 確認が成功すると、xz 圧縮されたサンプルモデルが model ディレクトリにダウンロードされて、さらに unxz コマンドで解凍されます。
 
+    [sample-model-downloader] : Decompress sample model data file using unxz command
+    Downloaded 'jawiki.20150602.neologd.bin.xz' at 32.7 MB/s, total 849.3 MB
+    [sample-model-downloader] : Finish..
+
 解凍されたサンプルモデルは以下の位置にあります。
 
-    $
+    $ ls -al model/jawiki.20150602.neologd.bin.xz
+    -rw-rw-r-- 1 overlast overlast 917846510  7月  2 20:57 2015 model/jawiki.20150602.neologd.bin
 
 このモデルについて簡単なコメントを書いておきます。
 
