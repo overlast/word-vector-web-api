@@ -106,11 +106,41 @@ Step2 で作った Docker image を使ってコンテナを起動します。
 もしも localhost の 22670 番ポートをすでに使っている場合は、以下を編集してコマンドを実行して下さい。
 
 
-起動がうまくいくと、以下の様な表示が出ます。
+おそらく以下の様な表示が出ます。
 
     $
 
+コンテナの起動に成功した場合、以下のコマンドで起動したコンテナの状態を確認できます。
 
+    $
+
+#### Step4. API から結果を取得する
+Step3 でコンテナの起動に成功している場合、curl や ブラウザで結果を確認できます。
+
+OSX と Linux との若干のコマンドの違いを吸収する以下のコマンドを使って、結果を確認してみましょう。
+
+まず distance で タモリ と Cosine 距離が近い単語を見てみましょう。
+
+    (略)
+    ], "status": "OK", "sort": "cosine similarity"}'
+
+正解データがあるわけではないので、なるほど、って感じですね。
+
+次に analogy で 「東京と東京タワー」との関係に近い「大阪」に対する東京タワー的なものが何かを見てみましょう。
+
+    $ analogy
+
+    '{"query": "東京 東京タワー 大阪", "method": "analogy",
+    (略)
+    ], "status": "OK", "sort": "cosine similarity"}'
+
+これも正解データがあるわけではないので、なるほど、って感じですね。
+
+実用するときは、モデルデータを改良して distance の結果を人手でフィルタリングして使うのがオススメです。
+
+API 自体の詳しい説明は以降の「word-vector-web-api の使い方」の節に書きました。
+
+## word-vector-web-api の使い方
 
 
 ### 動作に必要なもの
@@ -237,26 +267,6 @@ slave の nginx プロセスを複数立ち上げたいときは nginx.conf を�
 
 ## サンプルの実行例 (CentOS 上でインストールした場合)
 ### mecab-ipadic-neologd をシステム辞書として使った場合
-#### distance
-    '{"query": "LINE", "method": "distance", "format": "json", "total_count": 40, "items": [
-     {"term": "MORNING", "score": 0.59112554788589478},
-     {"term": "MUSIC", "score": 0.58910435438156128},
-     {"term": "SATURDAY", "score": 0.58483654260635376},
-     {"term": "POP", "score": 0.5823979377746582},
-     {"term": "SUNDAY", "score": 0.57760024070739746},
-    (略)
-    ], "status": "OK", "sort": "cosine similarity"}'
-
-#### analogy
-    '{"query": "原宿 クレープ 京都", "method": "analogy",
-     "format": "json", "total_count": 40, "items": [
-     {"term": "聖護院大根", "score": 0.4752272367477417},
-     {"term": "ペイストリー", "score": 0.46939295530319214},
-     {"term": "パンチェッタ", "score": 0.4637596607208252},
-     {"term": "ダンプリング", "score": 0.46223315596580505},
-     {"term": "和え", "score": 0.45975840091705322},
-    (略)
-    ], "status": "OK", "sort": "cosine similarity"}'
 
 #### どこに効果が出ている?
     正直、Wikipedia のモデルは動作はするけど具体的な良さがあまり感じられないですね。
