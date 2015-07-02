@@ -194,6 +194,10 @@ Step2 で作った Docker image を使ってコンテナを起動します。
     CONTAINER ID        IMAGE                                 COMMAND                CREATED             STATUS              PORTS                                       NAMES
     0077aef0e71a        sample-word-vector-web-api-s1:0.0.1   "/bin/sh -c /root/gi   58 seconds ago      Up 42 seconds       22671-22680/tcp, 0.0.0.0:23670->22670/tcp   stoic_turing
 
+Step2 でサーバプロセスが 3 つ立ち上がる Docker image を作った場合、そのイメージを使ったコンテナは以下のコマンドで起動できます。
+
+    $ ./libexec/run-docker-container-of-sample-word-vector-web-api-s3.sh -p 22670
+
 #### Step4. API から結果を取得する
 Step3 でコンテナの起動に成功している場合、curl や ブラウザで結果を確認できます。
 
