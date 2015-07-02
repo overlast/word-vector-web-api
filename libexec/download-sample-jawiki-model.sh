@@ -16,70 +16,68 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+set -eu
+#set -x
+
 BASEDIR=$(cd $(dirname $0);pwd)
 SCRIPT_NAME="[sample-model-downloader] :"
 PREFIX=/usr/local
 
-echo "$SCRIPT_NAME Start.."
+echo "${SCRIPT_NAME} Start.."
 
-if [ "$(uname)" == 'Darwin' ]; then
-    echo "$SCRIPT_NAME OSX is supported"
-    echo "$SCRIPT_NAME Linux is supported"
-
-    if [ ! -d ${BASEDIR}/../tmp ]; then
-        mkdir ${BASEDIR}/../tmp
+if [ "$(uname)" == 'Darwin' ] || [ "$(expr substr $(uname -s) 1 5)" == 'Linux' ]; then
+    if [ "$(uname)" == 'Darwin' ]; then
+            echo "${SCRIPT_NAME} OSX is supported"
+            if [ ! -d ${BASEDIR}/../tmp ]; then
+                mkdir ${BASEDIR}/../tmp
+            fi
+            brew install -y go hg
+    elif [ "$(expr substr $(uname -s) 1 5)" == 'Linux' ]; then
+            echo "${SCRIPT_NAME} Linux is supported"
+            if [ ! -d ${BASEDIR}/../tmp ]; then
+                echo "${SCRIPT_NAME} mkdir ${BASEDIR}/../tmp"
+                mkdir ${BASEDIR}/../tmp
+            fi
+            echo "${SCRIPT_NAME} Install go and hg"
+            sudo yum install -y go hg
+    else
+        exit 1
     fi
-    brew install -y go hg
-    GOPATH=${BASEDIR}/../tmp/go go get github.com/prasmussen/gdrive/cli
-    GOPATH=${BASEDIR}/../tmp/go go get github.com/voxelbrain/goptions
-    GOPATH=${BASEDIR}/../tmp/go go get code.google.com/p/goauth2/oauth
+
+    echo "${SCRIPT_NAME} go get github.com/prasmussen/gdrive/cli"
+    GOPATH=${BASEDIR}/../tmp/go go get -v github.com/prasmussen/gdrive/cli
+    echo "${SCRIPT_NAME} go get github.com/voxelbrain/goptions"
+    GOPATH=${BASEDIR}/../tmp/go go get -v github.com/voxelbrain/goptions
+    echo "${SCRIPT_NAME} go get code.google.com/p/goauth2/oauth"
+    GOPATH=${BASEDIR}/../tmp/go go get -v code.google.com/p/goauth2/oauth
+    echo "${SCRIPT_NAME} git clone https://github.com/prasmussen/gdrive.git"
     git clone https://github.com/prasmussen/gdrive.git ${BASEDIR}/../tmp/gdrive
+    echo "${SCRIPT_NAME} cd ${BASEDIR}/../tmp/gdrive"
     cd ${BASEDIR}/../tmp/gdrive
+    echo "${SCRIPT_NAME} Compile drive.go to create Google Drive CLI application"
     GOPATH=${BASEDIR}/../tmp/go go build -v ./drive.go
 
     if [ ! -d ${BASEDIR}/../model ]; then
+        echo "${SCRIPT_NAME} mkdir ${BASEDIR}/../model"
         mkdir ${BASEDIR}/../model
     fi
-    cd ${BASEDIR}/../model/
-    ${BASEDIR}/../tmp/gdrive/drive download --id 0B5QYYyltotqfM2lRQ3l4Mkc5Mk0
-    unxz ./jawiki.20150602.neologd.bin.xz
-    if [ ! -d /var/tmp/sample-word-vector-web-api/ ]; then
-        mkdir /var/tmp/sample-word-vector-web-api/
-    fi
-    ln -s ${BASEDIR}/../model/jawiki.20150602.neologd.bin /var/tmp/sample-word-vector-web-api/
-elif [ "$(expr substr $(uname -s) 1 5)" == 'Linux' ]; then
-    echo "$SCRIPT_NAME Linux is supported"
-    if [ ! -d ${BASEDIR}/../tmp ]; then
-        mkdir ${BASEDIR}/../tmp
-    fi
-    sudo yum install -y go hg
-    echo "$SCRIPT_NAME go get github.com/prasmussen/gdrive/cli"
-    GOPATH=${BASEDIR}/../tmp/go go get -v  github.com/prasmussen/gdrive/cli
-    echo "$SCRIPT_NAME"
-    GOPATH=${BASEDIR}/../tmp/go go get github.com/voxelbrain/goptions
-    echo "$SCRIPT_NAME"
-    GOPATH=${BASEDIR}/../tmp/go go get code.google.com/p/goauth2/oauth
-    echo "$SCRIPT_NAME"
-    git clone https://github.com/prasmussen/gdrive.git ${BASEDIR}/../tmp/gdrive
-    echo "$SCRIPT_NAME"
-    cd ${BASEDIR}/../tmp/gdrive
-    echo "$SCRIPT_NAME"
-    GOPATH=${BASEDIR}/../tmp/go go build -v ./drive.go
 
-    if [ ! -d ${BASEDIR}/../model ]; then
-        mkdir ${BASEDIR}/../model
-    fi
+    echo "${SCRIPT_NAME} cd ${BASEDIR}/../model/"
     cd ${BASEDIR}/../model/
-    echo "$SCRIPT_NAME gdrive"
+    echo "${SCRIPT_NAME} Download sample model data file from Google Drive using drive command"
     ${BASEDIR}/../tmp/gdrive/drive download --id 0B5QYYyltotqfM2lRQ3l4Mkc5Mk0
-    unxz ./jawiki.20150602.neologd.bin.xz
-    if [ ! -d /var/tmp/sample-word-vector-web-api/ ]; then
-        mkdir /var/tmp/sample-word-vector-web-api/
+
+    if [ -e ${BASEDIR}/../model/jawiki.20150602.neologd.bin ]; then
+        echo "${SCRIPT_NAME} Delete old sample model file"
+        rm ${BASEDIR}/../model/jawiki.20150602.neologd.bin
     fi
-    ln -s ${BASEDIR}/../model/jawiki.20150602.neologd.bin /var/tmp/sample-word-vector-web-api/
+
+    echo "${SCRIPT_NAME} Decompress sample model data file using unxz command"
+    unxz ./jawiki.20150602.neologd.bin.xz
+
 else
-    echo "$SCRIPT_NAME Your platform ($(uname -a)) isn't supported"
+    echo "${SCRIPT_NAME} Your platform ($(uname -a)) isn't supported"
     exit 1
 fi
 
-echo "$SCRIPT_NAME Finish.."
+echo "${SCRIPT_NAME} Finish.."
