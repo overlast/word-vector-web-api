@@ -153,6 +153,12 @@ Docker の build には以下のコマンドを使います。
     sample-word-vector-web-api-s1   0.0.1               a6aaf2fcdc1a        44 seconds ago      698.6 MB
     centos                          centos6             a005304e4e74        13 days ago         203.1 MB
 
+サーバプロセスが 3 つ立ち上がる Docker image を build したいときは以下のコマンドを使います。
+
+    $ libexec/create-docker-image-sample-word-vector-web-api-s3.sh
+
+起動すると 4 GByte 程度のメモリを使うけど、単位時間あたりに同時に処理できるリクエスト数が増えます。
+
 #### Step3. Docker image を使ったコンテナの起動
 Step2 で作った Docker image を使ってコンテナを起動します。
 
