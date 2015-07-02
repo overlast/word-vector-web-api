@@ -18,7 +18,7 @@ word-vector-web-api を利用することで、様々なライブラリや資源
 ### 欠点
 - サンプルを眺めて理解して、自分のアプリケーションに利用するためには、結局 word-vector-web-api の各コードを読む必要がある
 
-## Docker + サンプルモデルを使って結果を確認
+## Case1. Docker + サンプルモデルを使って結果を確認
 ### 事前に用意する必要があるもの
 #### Linux
 
@@ -201,7 +201,11 @@ Step2 でサーバプロセスが 3 つ立ち上がる Docker image を作った
 #### Step4. API から結果を取得する
 Step3 でコンテナの起動に成功している場合、curl や ブラウザで結果を確認できます。
 
+##### OSX
+
 OSX と Linux との若干のコマンドの違いを吸収する以下のコマンドを使って、結果を確認してみましょう。
+
+    $ ./libexec/get-responce-from-sample-word-vector-web-api.sh
 
 まず distance で タモリ と Cosine 距離が近い単語を見てみましょう。
 
@@ -224,8 +228,7 @@ OSX と Linux との若干のコマンドの違いを吸収する以下のコマ
 
 API 自体の詳しい説明は以降の「word-vector-web-api の使い方」の節に書きました。
 
-## word-vector-web-api の使い方
-
+## Case2. Linux 環境に直接インストールする
 
 ### 動作に必要なもの
 
@@ -237,6 +240,14 @@ API 自体の詳しい説明は以降の「word-vector-web-api の使い方」�
 - [Word2Vec](http://code.google.com/p/word2vec/) (word-vector-web-api ディレクトリ内にインストールされます)
 
 動作に必要なものは、上記ライブラリのインストール時に必要としている資源やライブラリです。
+
+
+
+## word-vector-web-api の使い方
+
+
+
+
 
 ### word-vector-web-api をインストールする準備
 
