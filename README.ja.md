@@ -127,19 +127,31 @@ word-vector-web-api を利用することで、様々なライブラリや資源
 
 Docker の build には以下のコマンドを使います。
 
-    $ docker/sample_s1/
+    $ libexec/create-docker-image-sample-word-vector-web-api-s1.sh
 
 もしも最後まで処理がうまくいった場合は、以下の様なメッセージが表示されます。
 
-    $
+    ...
+    Step 57 : ENTRYPOINT /root/git/word-vector-web-api/libexec/boot-word-vector-web-api-sample-1-slave.sh
+    ---> Running in bbec3c1833d9
+    ---> 76493a06b018
+    Removing intermediate container bbec3c1833d9
+    Successfully built 76493a06b018
+    [create-docker-image-sample-word-vector-web-api-s1] : Finish..
 
 表示されていない場合、何かの原因で build が失敗しています。
 
-ネットワーク環境に若干左右されるみたいなので、何度か時間を変えて実行してみてください。
+ネットワーク環境に若干左右されるみたいなので、何度か時間を変えて実行してみてください。または以下のようにして一回作成中の image を消してリトライして下さい。
 
-できあがった image は以下のディレクトリにあります。
+    $ $docker rmi -f sample-word-vector-web-api-s1:0.0.1
 
-    $
+できあがった image は以下のコマンドで確認できます。
+
+    $ docker images
+    $docker images
+    REPOSITORY                      TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+    sample-word-vector-web-api-s1   0.0.1               a6aaf2fcdc1a        44 seconds ago      698.6 MB
+    centos                          centos6             a005304e4e74        13 days ago         203.1 MB
 
 #### Step3. Docker image を使ったコンテナの起動
 Step2 で作った Docker image を使ってコンテナを起動します。
