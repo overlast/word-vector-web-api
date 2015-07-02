@@ -90,7 +90,7 @@ word-vector-web-api を利用することで、様々なライブラリや資源
     command-line-arguments
     [sample-model-downloader] : cd /home/overlast/git/word-vector-web-api/libexec/../model/
 
-うまくいくと、初めてdrive コマンドでモデルをダウンロードする場合には、 Google Drive からのダウンロードに必要な確認作業のための URL が表示されます。
+うまくいくと、初めてdrive コマンドでモデルをダウンロードする場合には、 Google Drive からのダウンロードに必要な確認作業のための URL が表示されます。過去に drive コマンドを認証した情報が保持されているなら同意が不要なのでURLは表示されません。
 
     [sample-model-downloader] : Download sample model data file from Google Drive using drive command
     Go to the following link in your browser:
