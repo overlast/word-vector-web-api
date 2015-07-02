@@ -301,7 +301,7 @@ Step3 でコンテナの起動に成功している場合、curl や ブラウ�
 
 API 自体の詳しい説明は以降の「word-vector-web-api の使い方」の節に書きます。
 
-### Step5. Docker コンテナの停止
+##### Step5. Docker コンテナの停止
 試し終わった後の Docker コンテナの停止は docker stop を使います。
 
 最初にコンテナのIDを調べます。
