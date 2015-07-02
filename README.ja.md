@@ -67,7 +67,7 @@ Dockerfile からイメージを作り、起動したコンテナ内でプロセ
         - $ boot2docker init
         - $ boot2docker start
         - $ eval "$(boot2docker shellinit)"
-            - shellinit すると dock
+            - shellinit すると docker コマンドが使えるようになります
 
 - Docker と boot2docker に関する知識
     - boot2docker を使って CentOS の docker image を pull して run できる程度に
