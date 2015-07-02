@@ -18,7 +18,25 @@ word-vector-web-api を利用することで、様々なライブラリや資源
 ### 欠点
 - サンプルを眺めて理解して、自分のアプリケーションに利用するためには、結局 word-vector-web-api の各コードを読む必要がある
 
-## Case1. Docker + サンプルモデルを使って結果を確認
+## word-vector-web-api のコードの入手方法
+
+更新は GitHub 経由で行います。
+
+初回は以下のコマンドでgit cloneしてください。
+
+    $ git clone --depth 1 https://github.com/overlast/word-vector-web-api.git
+
+または
+
+    $ git clone --depth 1 git@github.com:overlast/word-vector-web-api.git
+
+もしも、リポジトリの全変更履歴を入手したい方は「--depth 1」を消してcloneして下さい。
+
+## 使用例1. Docker + サンプルモデルを使って結果を確認
+以下では日本語 Wikipedia を使って作ったサンプルモデルを使ってデータを取得するための手順を書きます。
+
+まずは Docker を使って結果を取得するまでの手順を示します。
+
 ### 事前に用意する必要があるもの
 #### Linux
 
@@ -280,11 +298,8 @@ Step3 でコンテナの起動に成功している場合、curl や ブラウ�
 
 API 自体の詳しい説明は以降の「word-vector-web-api の使い方」の節に書きます。
 
-## Case2. Linux 環境に直接インストールする
-
-### 動作に必要なもの
-
-インストール時に以下のライブラリを順にインストールします。
+## word-vector-web-api が依存しているライブラリ
+インストール時に以下のライブラリが必要に応じて順にインストールされます。
 
 - [nginx-1.8.0](http://nginx.org/) (独自のディレクトリにインストールされます)
 - [nginx-msgpack-rpc-module](https://github.com/overlast/nginx-msgpack-rpc-module)
@@ -293,135 +308,125 @@ API 自体の詳しい説明は以降の「word-vector-web-api の使い方」�
 
 動作に必要なものは、上記ライブラリのインストール時に必要としている資源やライブラリです。
 
-
-
 ## word-vector-web-api の使い方
-
-
-
-
-
-### word-vector-web-api をインストールする準備
-
-更新は GitHub 経由で行います。
-
-初回は以下のコマンドでgit cloneしてください。
-
-    $ git clone --depth 1 https://github.com/overlast/word-vector-web-api.git
-
-または
-
-    $ git clone --depth 1 git@github.com:overlast/word-vector-web-api.git
-
-もしも、リポジトリの全変更履歴を入手したい方は「--depth 1」を消してcloneして下さい。
-
-### word-vector-web-api のインストール/更新
-#### Step.1
-上記の準備でcloneしたリポジトリに移動します。
-
-    $ cd word-vector-web-api
-
-#### Step.2
-以下のコマンドを実行するとインストール、または、上書きによる最新版への更新ができます。
-
-    $ ./bin/word-vector-web-api -n
-
-インストール先はオプション未指定の場合 /use/local 以下に作成したフォルダになります。
-
-任意の path にインストールしたい場合や、user 権限でインストールする際のオプションなどは以下で確認できます。
-
-    $ ./bin/install-word-vector-web-api -h
-
-### word-vector-web-api の使用例
 word-vector-web-api を使いたいときは、自分の作成したいアプリケーションごとに conf ファイルをコピーして設定を調整して使うのが良いです。
 
-以下では日本語 Wikipedia を使って作ったサンプルモデルを使ってデータを取得するための手順を書きます。
+以下に API の仕様や、カスタマイズ時に必要な作業についても書きます。
 
-はじめにサンプルモデルを用意して、それから word2vec server を 1 プロセスだけ立ち上げるサンプルを起動します。
+### API ドキュメント
 
-起動した word2vec server から結果を取得した後、word-vector-web-api を停止します。
+#### distance(string)
+##### リクエストURL
 
-最後に word2vec server を 3 プロセス立ち上げるサンプルを起動・停止します。
+    http://[host_name or ip_address]:[port_number]/distance?a1=[query_string]
 
-具体的に何をしているかは各スクリプトを読むと分かります。
+##### リクエストパラメータ
+API は callback パラメタが指定されれ場合はレスポンスを JSONP 形式で返し、それ以外の場合は JSON 形式で返す。
 
-#### Step1. サンプルモデルのダウンロード
-以下のモデルファイルをダウンロードして、word-vector-web-api/model 以下にコピーして下さい。
-
-
-#### Step2. サンプルモデルの解凍
-word-vector-web-api/model 以下にコピーしたモデルファイルを解凍します。
-
-    $ cd word-vector-web-api
-    $ unxz model/jawiki.20150602.neologd.bin.xz
-    $ ls -al model
-    -rw-rw-r--  1 overlast overlast  917846510  6月 28 11:27 2015 jawiki.20150602.neologd.bin
-
-#### Step3. サンプルモデルを使って Word Vector Web API を起動
-以下のコマンドでサンプルモデルを使った Word Vector Web API を起動できます。
-
-    $ libexec/boot-word-vector-web-api-sample.sh
-
-起動すると 1 GByte 程度のメモリを使います。
-
-このコマンドで立ち上がるプロセスは以下のポートを使います。
-
-| process name | port number | access to |
+| parameter name | type | description |
 | --- | --- | --- |
-| nginx(master) | 22670 | nginx(slave) |
-| nginx(slave) | 22671 | word2vec-message-pack-server |
-| word2vec-message-pack-server | 22676 | sample model |
+| a1(required)| string | Word2Vec の distance のクエリ文字列 |
+| callback | string | コールバック関数名 |
 
-#### Step4. サンプルモデルを使って Word Vector Web API を起動
-例えば、distance 相当の結果を得る場合は、以下の様にアクセスします。
+##### サンプルリクエストURL
+    "http://0.0.0.0:22670/distance?a1=タモリ"
+    "http://0.0.0.0:22670/distance?a1=タモリ&callback=sample"
 
-    $ wget "http://localhost:22670/distance?a1=タモリ" -o distance_tamori
+##### レスポンスフィールド
+| field name | description |
+| --- | --- |
+| format | json のみ |
+| method | まさに distance メソッド |
+| sort |  items の score の値の算出方法。今は cosine 距離のみ |
+| status | OK=結果が得られている, NG=何か不具合がある |
+| query | a1 パラメタで与えられた文字列 |
+| items | 検索結果の内容。term と score の組の配列。  |
+| term | score フィールドのスコアを持つ文字列 |
+| score | sort フィールドの手法で算出されたスコアの実数値 |
+| total_count | items フィールドに含まれる term と score の組数 |
 
-例えば、analogy 相当の結果を得る場合は、以下の様にアクセスします。
+##### サンプルレスポンス
+以下は a1 パラメタに'タモリ'を指定した場合のレスポンスです
 
-    $ wget "http://localhost:22670/analogy?a1=神奈川&a2=横浜&a3=東京" -o analogy_kanagawa_yokohama_tokyo
+    {"format": "json", "items": [
+    {"term": "明石家さんま", "score": 0.81528389453887939}, {"term": "さんま", "score": 0.80035871267318726},
+    {"term": "ビートたけし", "score": 0.79251360893249512}, {"term": "所ジョージ", "score": 0.76938104629516602},
+    {"term": "とんねるず", "score": 0.7473946213722229}, {"term": "爆笑問題", "score": 0.73406845331192017},
+    (略)
+    {"term": "上岡龍太郎", "score": 0.66450983285903931}, {"term": "ナインティナイン", "score": 0.66341793537139893},
+    {"term": "松本人志", "score": 0.66267943382263184}, {"term": "和田アキ子", "score": 0.66127783060073853}
+    ], "query": "タモリ", "method": "distance", "sort": "cosine similarity", "status": "OK", "total_count": 40}
 
-#### Step5. サンプルモデルを使った Word Vector Web API を停止
-以下のコマンドで Step3 で起動した Word Vector Web API を起動できます。
+#### analogy(string, string, string)
+##### リクエストURL
 
-    $ libexec/quit-word-vector-web-api-sample.sh
+    http://[host_name or ip_address]:[port_number]/analogy?a1=[query_string]&a2=[query_string]&a3=[query_string]
 
-#### Step6. サンプルモデルを使って複数プロセスを使った Word Vector Web API を起動
-slave の nginx プロセスを複数立ち上げたいときは nginx.conf を編集します。
+##### リクエストパラメータ
+API は callback パラメタが指定されれ場合はレスポンスを JSONP 形式で返し、それ以外の場合は JSON 形式で返す。
 
-でも、大変だと思うのでとりあえずサンプルを用意してあります。
-
-    $ libexec/boot-word-vector-web-api-3-slaves-sample.sh
-
-起動すると計 3 GByte 程度のメモリを使います。
-
-このコマンドで立ち上がるプロセスは以下のポートを使います。
-
-| process name | port number | access to |
+| parameter name | type | description |
 | --- | --- | --- |
-| nginx(master) | 22670 | nginx(slave 1、2と3 に均等に) |
-| nginx(slave 1) | 22671 | word2vec-message-pack-server 1 |
-| nginx(slave 2) | 22672 | word2vec-message-pack-server 2 |
-| nginx(slave 3) | 22673 | word2vec-message-pack-server 3 |
-| word2vec-message-pack-server 1 | 22676 | sample model |
-| word2vec-message-pack-server 2 | 22677 | sample model |
-| word2vec-message-pack-server 3 | 22678 | sample model |
+| a1(required)| string | Word2Vec の analogy のクエリ文字列a |
+| a2(required)| string | Word2Vec の analogy のクエリ文字列b |
+| a3(required)| string | Word2Vec の analogy のクエリ文字列c |
+| callback | string | コールバック関数名 |
 
-#### Step7. サンプルモデルを使った複数プロセスを使った Word Vector Web API を停止
-以下のコマンドで Step6 で起動した Word Vector Web API を起動できます。
+##### サンプルリクエストURL
+    "http://0.0.0.0:22670/analogy?a1=東京&a2=東京タワー&a3=大阪"
+    "http://0.0.0.0:22670/analogy?a1=東京&a2=東京タワー&a3=大阪&callback=sample"
 
-    $ libexec/quit-word-vector-web-api-3-slaves-sample.sh
+##### レスポンスフィールド
+| field name | description |
+| --- | --- |
+| format | json のみ |
+| method | まさに analogy メソッド |
+| sort |  items の score の値の算出方法。今は cosine 距離のみ |
+| status | OK=結果が得られている, NG=何か不具合がある |
+| query | a1、a2、a3 パラメタで与えられた文字列を半角スペースで結合した文字列 |
+| items | 検索結果の内容。term と score の組の配列。  |
+| term | score フィールドのスコアを持つ文字列 |
+| score | sort フィールドの手法で算出されたスコアの実数値 |
+| total_count | items フィールドに含まれる term と score の組数 |
 
-## サンプルの実行例 (CentOS 上でインストールした場合)
-### mecab-ipadic-neologd をシステム辞書として使った場合
+##### サンプルレスポンス
+以下は a1 パラメタに'東京'、a2 パラメタに'東京タワー'、そして a3 パラメタに'大阪'を指定した場合のレスポンスです。
 
-#### どこに効果が出ている?
-    正直、Wikipedia のモデルは動作はするけど具体的な良さがあまり感じられないですね。
+    {"format": "json", "items": [
+    {"term": "電波塔", "score": 0.60608410835266113}, {"term": "東京スカイツリー", "score": 0.58792692422866821},
+    {"term": "あべのハルカス", "score": 0.52693915367126465}, {"term": "生駒山", "score": 0.52557224035263062},
+    {"term": "対馬オメガ局", "score": 0.52209371328353882}, {"term": "通天閣", "score": 0.51043027639389038},
+    (略)
+    {"term": "梅田スカイビル", "score": 0.40839734673500061}, {"term": "夢洲", "score": 0.4076114296913147},
+    {"term": "コスモタワー", "score": 0.40697681903839111}, {"term": "スカイツリー", "score": 0.4069637656211853}
+    ], "query": "東京 東京タワー 大阪", "method": "analogy", "sort": "cosine similarity", "status": "OK", "total_count": 40}
 
-    真面目に文書を集めてモデルを作るのがとても大切だなと心から感じます。
 
-### 標準のシステム辞書(ipadic-2.7.0)を使った場合
-    gaoh (今書いてる)
+### API の構成
+word2vec-message-pack-server のプロセス数に関わらず、nginx(master) が全てのリクエストをさばいて、結果を 24 時間キャッシュします。
+
+#### word2vec-message-pack-server プロセス数が 1 の場合
+
+| process name | port number | access to | cache | protocol |
+| --- | --- | --- | --- | --- |
+| nginx(master) | 22670 | nginx(slave) | on | HTTP |
+| nginx(slave) | 22671 | word2vec-message-pack-server | - | HTTP & MessagePack-RPC |
+| word2vec-message-pack-server | 22676 | sample model | - | MessagePack-RPC |
+
+#### word2vec-message-pack-server プロセス数が 3 の場合
+
+| process name | port number | access to | cache | protocol |
+| --- | --- | --- | --- | --- |
+| nginx(master) | 22670 | nginx(slave 1、2と3 に均等に) | on | HTTP |
+| nginx(slave 1) | 22671 | word2vec-message-pack-server 1 | - | HTTP & MessagePack-RPC |
+| nginx(slave 2) | 22672 | word2vec-message-pack-server 2 | - | HTTP & MessagePack-RPC |
+| nginx(slave 3) | 22673 | word2vec-message-pack-server 3 | - | HTTP & MessagePack-RPC |
+| word2vec-message-pack-server 1 | 22676 | sample model | - | MessagePack-RPC |
+| word2vec-message-pack-server 2 | 22677 | sample model | - | MessagePack-RPC |
+| word2vec-message-pack-server 3 | 22678 | sample model | - | MessagePack-RPC |
+
+### カスタマイズ時の設定ファイルなどの編集方法
+いま書いてます。
 
 ## word-vector-web-api を通じて主張したいこと
 研究的な実装を C/C++ で実装して [word2vec-msgpack-rpc-server](https://github.com/overlast/word2vec-msgpack-rpc-server) と同様に msgpack-rpc-server 化すれば、LL 言語で下手な実装をするより省メモリで高速な実装を各言語の MessagePack-RPC モジュール経由で利用できる。
@@ -444,6 +449,8 @@ word-vector-web-api を実用する際には、単語ベクトル作る際の日
 継続して開発しますので、気になるところはどんどん改善されます。
 
 ユーザの8割が気になる部分を優先して改善します。
+
+まずは gensim の models.word2vec で使える method のうち、よく使いそうなものを順に実装していく予定です。
 
 ## Bibtex
 
