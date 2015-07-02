@@ -79,6 +79,40 @@ $ sudo yum -y clean all
     - 分かち書きに MeCab と mecab-ipadic-NEologd を使用
     - Word2Vec のパラメタは"-cbow 0 -size 300 -window 5 -negative 0 -hs 1 -sample 1e-5"
 
+#### Step2. Docker image の作成
+次に docker/sample_s1/Dockerfile を使って、起動すると 1.5 GByte 程度のメモリを使う Docker image を build します。
+
+Docker の build には以下のコマンドを使います。
+
+    $ docker/sample_s1/
+
+もしも最後まで処理がうまくいった場合は、以下の様なメッセージが表示されます。
+
+    $
+
+表示されていない場合、何かの原因で build が失敗しています。
+
+ネットワーク環境に若干左右されるみたいなので、何度か時間を変えて実行してみてください。
+
+できあがった image は以下のディレクトリにあります。
+
+    $
+
+#### Step3. Docker image を使ったコンテナの起動
+Step2 で作った Docker image を使ってコンテナを起動します。
+
+起動には以下のコマンドを使います。
+
+もしも localhost の 22670 番ポートをすでに使っている場合は、以下を編集してコマンドを実行して下さい。
+
+
+起動がうまくいくと、以下の様な表示が出ます。
+
+    $
+
+
+
+
 ### 動作に必要なもの
 
 インストール時に以下のライブラリを順にインストールします。
