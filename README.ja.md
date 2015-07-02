@@ -465,13 +465,15 @@ word2vec-message-pack-server のプロセス数に関わらず、nginx(master) �
 ## word-vector-web-api を通じて主張したいこと
 研究的な実装を C/C++ で実装して [word2vec-msgpack-rpc-server](https://github.com/overlast/word2vec-msgpack-rpc-server) と同様に msgpack-rpc-server 化すれば、LL 言語で下手な実装をするより省メモリで高速な実装を各言語の MessagePack-RPC モジュール経由で利用できる。
 
-MessagePack-RPC は依存ライブラリが少なく、他のプロトコルに無い柔軟性があるので、研究的なものづくりに向いている。
+MessagePack-RPC は依存ライブラリが少なく、他のプロトコルに無い柔軟性があるので、最初は雑に作りたい研究的なものづくりに向いている。
 
-また、選択したプログラミング言語によるメモリの無駄が少ないことは、発明された新しい技術が実応用されるうえでとても重要である。
+また、選択したプログラミング言語によるメモリの無駄が少ないことは、発明された新しい技術を実応用に近づけたり、結果を精緻化するうえでとても重要である。
 
 さらに、その実装を Web API 化する場合、[nginx-msgpack-rpc-module](https://github.com/overlast/nginx-msgpack-rpc-module) を利用すれば nginx の設定ファイルを書き換えるだけで msgpack-rpc-client と HTTP Server の用意が終わる。
 
-研究的な実装を一般のエンジニアに試してもらうには、Web API にリクエストして結果の JSON を見せるのが、個人的な経験上だは一番早いのでオススメである。
+新しい RPC server を書いた際に必要になる RPC client の実装工数がとても少なくなることは個人的にとても重要である。
+
+そして研究的な実装を一般のエンジニアに試してもらうには、Web API にリクエストして結果の JSON を見てもらうことが、個人的な経験上では一番早いのでオススメである。
 
 何か有益なものを実装するときは、Python ではなく C/C++ で実装し、更に Web API 化することで、最終的により広い範囲の研究者やエンジニアがユーザになるだろう。
 
