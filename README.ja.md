@@ -165,16 +165,34 @@ Step2 で作った Docker image を使ってコンテナを起動します。
 
 起動には以下のコマンドを使います。
 
-もしも localhost の 22670 番ポートをすでに使っている場合は、以下を編集してコマンドを実行して下さい。
+    $ ./libexec/run-docker-container-of-sample-word-vector-web-api-s1.sh
 
+このコマンドでコンテナを起動すると word-vector-web-api に 22670 番ポートからアクセスできるようになります。
+
+もしも localhost の 22670 番ポートをすでに使っている場合は、-p オプションで空いているポートを指定して下さい。
+
+    $ ./libexec/run-docker-container-of-sample-word-vector-web-api-s1.sh
+    [run-docker-container-of-sample-word-vector-web-api-s1] : Start..
+    [run-docker-container-of-sample-word-vector-web-api-s1] : OSX is supported
+    [run-docker-container-of-sample-word-vector-web-api-s1] : Run docker container of sample
+    543a30bc4737c9c287953a8f8b1b9d5af52b55fa14a1a3737278908896a182cf
+    Error response from daemon: Cannot start container 543a30bc4737c9c287953a8f8b1b9d5af52b55fa14a1a3737278908896a182cf: Bind for 0.0.0.0:22670 failed: port is already allocated
+    $
+    $ ./libexec/run-docker-container-of-sample-word-vector-web-api-s1.sh -p 23670
 
 おそらく以下の様な表示が出ます。
 
-    $
+    $./libexec/run-docker-container-of-sample-word-vector-web-api-s1.sh --port 23670
+    [run-docker-container-of-sample-word-vector-web-api-s1] : OSX is supported
+    [run-docker-container-of-sample-word-vector-web-api-s1] : Run docker container of sample
+    0077aef0e71a9858342e3f7f780bd5dbac0184253cbef917e278a17d27b7a5ff
+    [run-docker-container-of-sample-word-vector-web-api-s1] : Finish..
 
 コンテナの起動に成功した場合、以下のコマンドで起動したコンテナの状態を確認できます。
 
-    $
+    $ docker ps
+    CONTAINER ID        IMAGE                                 COMMAND                CREATED             STATUS              PORTS                                       NAMES
+    0077aef0e71a        sample-word-vector-web-api-s1:0.0.1   "/bin/sh -c /root/gi   58 seconds ago      Up 42 seconds       22671-22680/tcp, 0.0.0.0:23670->22670/tcp   stoic_turing
 
 #### Step4. API から結果を取得する
 Step3 でコンテナの起動に成功している場合、curl や ブラウザで結果を確認できます。
