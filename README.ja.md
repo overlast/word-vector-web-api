@@ -11,16 +11,60 @@ word-vector-web-api を利用することで、様々なライブラリや資源
 - 結果取得時に JSONP を指定すれば、フロントエンドからの結果取得・可視化も可能
 - HTTP サーバに nginx を使っており、処理結果がキャッシュされる
 - 割と高速、割と省メモリ
-    - モデルの読み込み、検索は C++ のサーバでおこなっている
+    - モデルの読み込みと検索は C++ な MessagePack RPC サーバでおこなっている
 - Dockerfile が用意されている
     - アプリケーションごとに ENDPOINT に使うスクリプトを改変して image を作り直せばよい
 
 ### 欠点
--
+- サンプルを眺めて理解して、自分のアプリケーションに利用するためには、結局 word-vector-web-api の各コードを読む必要がある
 
-## 使用開始
+## Docker + サンプルモデルを使って結果を確認
+### 事前に用意する必要があるもの
+#### Linux
 
+- (登録していない場合) epel リポジトリ
 
+$ sudo yum -y clean all
+
+    $ sudo yum -y install epel-release
+
+    $ sudo yum -y update
+
+- docker
+
+    $ sudo yum --enablerepo=epel -y install docker-io
+
+- Docker に関する知識
+    - docker コマンドで CentOS の docker image を pull して run できる程度に
+
+- Google アカウント
+    - サンプルモデルのダウンロードに必要です
+
+#### OSX
+- [boot2docker](http://boot2docker.io/)
+    - パッケージをインストールする
+
+- Docker と boot2docker に関する知識
+    - boot2docker を使って CentOS の docker image を pull して run できる程度に
+
+- Google アカウント
+    - サンプルモデルのダウンロードに必要です
+
+### 手順
+#### Step1. サンプルモデルの入手
+はじめに以下のコマンドを実行してサンプルモデル(約 800 MByte)を Google Drive からダウンロードします。
+
+    $
+
+上記で実行したスクリプトは、golang で実装された drive コマンドのコンパイルと、それを使った Google Drive に対するリクエストを行います。
+
+うまくいくと、Google Drive からのダウンロードに必要な確認作業のための URL が表示されます。
+
+この URL にブラウザでアクセスして、同意画面で同意して、確認用の token を得たら、以下のようにコピペします。
+
+    $
+
+確認が成功すると、xz 圧縮されたサンプルモデルが model ディレクトリにダウンロードされて、さらに unxz コマンドで解凍されます。
 
 ### 動作に必要なもの
 
