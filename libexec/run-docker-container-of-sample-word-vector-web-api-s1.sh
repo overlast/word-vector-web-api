@@ -39,7 +39,6 @@ do
             ;;
         -*)
             echo "${SCRIPT_NAME}: illegal option -- '$(echo $1 | sed 's/^-*//')'" 1>&2
-            usage
             exit 1
             ;;
         *)
