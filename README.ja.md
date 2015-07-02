@@ -428,9 +428,9 @@ word2vec-message-pack-server のプロセス数に関わらず、nginx(master) �
 | nginx(slave 1) | 22671 | word2vec-message-pack-server 1 | nginx(master) | - | HTTP & MessagePack-RPC |
 | nginx(slave 2) | 22672 | word2vec-message-pack-server 2 | nginx(master) | - | HTTP & MessagePack-RPC |
 | nginx(slave 3) | 22673 | word2vec-message-pack-server 3 | nginx(master) | - | HTTP & MessagePack-RPC |
-| word2vec-message-pack-server 1 | 22676 | sample model | nginx(slave 1) | - | MessagePack-RPC |
-| word2vec-message-pack-server 2 | 22677 | sample model | nginx(slave 2) | - | MessagePack-RPC |
-| word2vec-message-pack-server 3 | 22678 | sample model | nginx(slave 3) | - | MessagePack-RPC |
+| word2vec-message-pack-server 1 | 22676 | - | nginx(slave 1) | - | MessagePack-RPC |
+| word2vec-message-pack-server 2 | 22677 | - | nginx(slave 2) | - | MessagePack-RPC |
+| word2vec-message-pack-server 3 | 22678 | - | nginx(slave 3) | - | MessagePack-RPC |
 
 ### カスタマイズ時の設定ファイルなどの編集方法
 いま書いてます。
