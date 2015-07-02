@@ -477,7 +477,7 @@ MessagePack-RPC は依存ライブラリが少なく、他のプロトコルに�
 
 何か有益なものを実装するときは、Python ではなく C/C++ で実装し、更に Web API 化することで、最終的により広い範囲の研究者やエンジニアがユーザになるだろう。
 
-word-vector-web-api を実用する際には、単語ベクトル作る際の日本語文の単語分割の結果は形態素解析辞書によって変わるので、mecab-ipadic と [mecab-ipadic-NEologd](http://github.com/neologd/mecab-ipadic-neologd)を併用するのが望ましい。
+word-vector-web-api を実用する際には、単語ベクトルのモデルを作る際の日本語文の単語分割の結果が形態素解析辞書によって変わり、その変化が性能に大きく影響するので、mecab-ipadic と [mecab-ipadic-NEologd](http://github.com/neologd/mecab-ipadic-neologd)を併用するのが望ましい。
 
 以上です。
 
