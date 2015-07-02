@@ -310,7 +310,7 @@ API 自体の詳しい説明は以降の「word-vector-web-api の使い方」�
     CONTAINER ID        IMAGE                                 COMMAND                CREATED             STATUS              PORTS                                       NAMES
     0077aef0e71a        sample-word-vector-web-api-s1:0.0.1   "/bin/sh -c /root/gi   58 seconds ago      Up 42 seconds       22671-22680/tcp, 0.0.0.0:23670->22670/tcp   stoic_turing
 
-ID が分かったら docker stop <CONTAINER ID> と指定します。
+ID が分かったら docker stop [CONTAINER ID] と指定します。
 
     $ docker stop 0077aef0e71a
 
