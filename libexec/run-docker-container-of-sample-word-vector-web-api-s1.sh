@@ -20,7 +20,7 @@ set -eu
 #set -x
 
 BASEDIR=$(cd $(dirname $0);pwd)
-SCRIPT_NAME="[create-docker-image-sample-word-vector-web-api-s1] :"
+SCRIPT_NAME="[run-docker-container-of-sample-word-vector-web-api-s1] :"
 HOST_PORT=22670
 
 echo "${SCRIPT_NAME} Start.."
@@ -30,7 +30,7 @@ do
     case "$OPT" in
         '-p'|'--port' )
             if [[ -z "$2" ]] || [[ "$2" =~ ^-+ ]]; then
-                echo "${PROGRAM_NAME}: option requires an argument -- $1" 1>&2
+                echo "${SCRIPT_NAME}: option requires an argument -- $1" 1>&2
                 usage
                 exit 1
             fi
@@ -38,7 +38,7 @@ do
             shift 2
             ;;
         -*)
-            echo "${PROGRAM_NAME}: illegal option -- '$(echo $1 | sed 's/^-*//')'" 1>&2
+            echo "${SCRIPT_NAME}: illegal option -- '$(echo $1 | sed 's/^-*//')'" 1>&2
             usage
             exit 1
             ;;
