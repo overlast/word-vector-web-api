@@ -322,7 +322,17 @@ word-vector-web-api を使いたいときは、自分の作成したいアプリ
 
 ### API ドキュメント
 
-#### distance(string)
+#### distance(string a)
+a という 1 単語のクエリを投げると、ベクトル空間上でベクトル a に最も近いベクトル b を探して答えます。
+
+具体的には「タモリ = ?」の ? に何が入りそうかを考える様なものです。
+
+答えがどうなって欲しいかも考えてみましょう。
+
+サンプルモデルは Wikipedia から作りました。ベクトルを構築する手法の性質から、タモリさんと同年代に同じ職種だった人の名前は同じような文脈で出現することが多そうで、距離が近くなりそうです。
+
+お笑いビッグ 3 みたいな概念がありますし、明石家さんまさんやビートたけしさんは近いかもしれませんね。。(それがうまくいくかはモデル作成に使ったコーパス次第です)
+
 ##### リクエストURL
 
     http://[host_name or ip_address]:[port_number]/distance?a1=[query_string]
@@ -364,7 +374,17 @@ API は callback パラメタが指定されれ場合はレスポンスを JSONP
     {"term": "松本人志", "score": 0.66267943382263184}, {"term": "和田アキ子", "score": 0.66127783060073853}
     ], "query": "タモリ", "method": "distance", "sort": "cosine similarity", "status": "OK", "total_count": 40}
 
-#### analogy(string, string, string)
+所ジョージさんですか。なるほど。
+
+#### analogy(string c, string b, string c)
+a、b と c の 3 単語のクエリを投げると、a - b = c - d という状態に一番近い d を見つけるために、ベクトル空間上でベクトル b - a + c に最も近いベクトル d を探して答える。
+
+具体的には「東京 - 東京タワー = 大阪 - ?」の ? に何が入りそうかを考える様なものです。
+
+答えがどうなって欲しいかも考えてみましょう。
+
+東京から東京的な要素とタワー的な要素をひいたものを大阪から作るには、大阪から大阪的要素とタワー的要素をひくために、通天閣とかをひくとどうでしょうか。。(それがうまくいくかはモデル作成に使ったコーパス次第です)
+
 ##### リクエストURL
 
     http://[host_name or ip_address]:[port_number]/analogy?a1=[query_string]&a2=[query_string]&a3=[query_string]
@@ -408,6 +428,7 @@ API は callback パラメタが指定されれ場合はレスポンスを JSONP
     {"term": "コスモタワー", "score": 0.40697681903839111}, {"term": "スカイツリー", "score": 0.4069637656211853}
     ], "query": "東京 東京タワー 大阪", "method": "analogy", "sort": "cosine similarity", "status": "OK", "total_count": 40}
 
+電波塔ですか。そうですか。
 
 ### API の構成
 word2vec-message-pack-server のプロセス数に関わらず、nginx(master) が全てのリクエストをさばいて、結果を 24 時間キャッシュします。
@@ -461,7 +482,7 @@ word-vector-web-api を実用する際には、単語ベクトル作る際の日
 
 ## Bibtex
 
-もしも mecab-ipadic-NEologd を論文から参照して下さる場合は、以下の bibtex をご利用ください。
+もしも word-vector-web-api を論文から参照して下さる場合は、以下の bibtex をご利用ください。
 
     @misc{sato2015wordvectorwebapi,
         title  = {Word Vector Web API},
