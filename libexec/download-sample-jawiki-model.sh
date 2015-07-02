@@ -51,9 +51,21 @@ if [ "$(uname)" == 'Darwin' ] || [ "$(expr substr $(uname -s) 1 5)" == 'Linux' ]
     echo "${SCRIPT_NAME} go get code.google.com/p/goauth2/oauth"
     GOPATH=${BASEDIR}/../tmp/go go get -v code.google.com/p/goauth2/oauth
     echo "${SCRIPT_NAME} git clone https://github.com/prasmussen/gdrive.git"
-    git clone https://github.com/prasmussen/gdrive.git ${BASEDIR}/../tmp/gdrive
+
+    if [ ! -d ${BASEDIR}/../tmp ]; then
+        echo "${SCRIPT_NAME} mkdir ${BASEDIR}/../tmp"
+        mkdir ${BASEDIR}/../tmp
+    fi
+
+    if [ ! -d ${BASEDIR}/../tmp/gdrive/ ] || [ ! -e ${BASEDIR}/../tmp/gdrive/.git ]; then
+        echo "${SCRIPT_NAME} git clone github.com/prasmussen/gdrive"
+        git clone https://github.com/prasmussen/gdrive.git ${BASEDIR}/../tmp/gdrive
+    fi
+
     echo "${SCRIPT_NAME} cd ${BASEDIR}/../tmp/gdrive"
     cd ${BASEDIR}/../tmp/gdrive
+    git pull
+
     echo "${SCRIPT_NAME} Compile drive.go to create Google Drive CLI application"
     GOPATH=${BASEDIR}/../tmp/go go build -v ./drive.go
 
