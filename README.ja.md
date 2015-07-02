@@ -66,6 +66,19 @@ $ sudo yum -y clean all
 
 確認が成功すると、xz 圧縮されたサンプルモデルが model ディレクトリにダウンロードされて、さらに unxz コマンドで解凍されます。
 
+解凍されたサンプルモデルは以下の位置にあります。
+
+    $
+
+このモデルについて簡単なコメントを書いておきます。
+
+- [jawiki.20150602.neologd.bin.xz (810MByte)](https://drive.google.com/file/d/0B5QYYyltotqfM2lRQ3l4Mkc5Mk0/view?usp=sharing)
+    - 日本語 Wikipedia の 2015-06-02 の dump データ(jawiki-latest-pages-articles.xml.bz2)から作成
+    - jawiki-latest-pages-articles.xml.bz2 から plain text を抽出する際に New Version の [WikiExtractor.py](https://svn.code.sf.net/p/apertium/svn/trunk/apertium-tools/WikiExtractor.py) を使用
+        - http://wiki.apertium.org/wiki/Wikipedia_Extractor
+    - 分かち書きに MeCab と mecab-ipadic-NEologd を使用
+    - Word2Vec のパラメタは"-cbow 0 -size 300 -window 5 -negative 0 -hs 1 -sample 1e-5"
+
 ### 動作に必要なもの
 
 インストール時に以下のライブラリを順にインストールします。
@@ -124,12 +137,6 @@ word-vector-web-api を使いたいときは、自分の作成したいアプリ
 #### Step1. サンプルモデルのダウンロード
 以下のモデルファイルをダウンロードして、word-vector-web-api/model 以下にコピーして下さい。
 
-- [jawiki.20150602.neologd.bin.xz (810MByte)](https://drive.google.com/file/d/0B5QYYyltotqfM2lRQ3l4Mkc5Mk0/view?usp=sharing)
-    - 日本語 Wikipedia のdumpデータ(jawiki-latest-pages-articles.xml.bz2)から作成
-    - jawiki-latest-pages-articles.xml.bz2 から plain text を抽出する際に New Version の [WikiExtractor.py](https://svn.code.sf.net/p/apertium/svn/trunk/apertium-tools/WikiExtractor.py) を使用
-        - http://wiki.apertium.org/wiki/Wikipedia_Extractor
-    - 分かち書きに MeCab と mecab-ipadic-NEologd を使用
-    - Word2Vec のパラメタは"-cbow 0 -size 300 -window 5 -negative 0 -hs 1 -sample 1e-5"
 
 #### Step2. サンプルモデルの解凍
 word-vector-web-api/model 以下にコピーしたモデルファイルを解凍します。
