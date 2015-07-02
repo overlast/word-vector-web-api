@@ -131,7 +131,7 @@ Dockerfile からイメージを作り、起動したコンテナ内でプロセ
 
 解凍されたサンプルモデルは以下の位置にあります。
 
-    $ ls -al model/jawiki.20150602.neologd.bin.xz
+    $ ls -al model/jawiki.20150602.neologd.bin
     -rw-rw-r-- 1 overlast overlast 917846510  7月  2 20:57 2015 model/jawiki.20150602.neologd.bin
 
 このモデルについて簡単なコメントを書いておきます。
