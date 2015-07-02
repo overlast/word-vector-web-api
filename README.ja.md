@@ -414,23 +414,23 @@ word2vec-message-pack-server のプロセス数に関わらず、nginx(master) �
 
 #### word2vec-message-pack-server プロセス数が 1 の場合
 
-| process name | port number | access to | cache | protocol |
-| --- | --- | --- | --- | --- |
-| nginx(master) | 22670 | nginx(slave) | on | HTTP |
-| nginx(slave) | 22671 | word2vec-message-pack-server | - | HTTP & MessagePack-RPC |
-| word2vec-message-pack-server | 22676 | sample model | - | MessagePack-RPC |
+| process name | port number | request to | return to | cache of response | protocol |
+| --- | --- | --- | --- | --- | --- |
+| nginx(master) | 22670 | nginx(slave) | user | on | HTTP |
+| nginx(slave) | 22671 | word2vec-message-pack-server | nginx(master) | - | HTTP & MessagePack-RPC |
+| word2vec-message-pack-server | 22676 | - | nginx(slave) | - | MessagePack-RPC |
 
 #### word2vec-message-pack-server プロセス数が 3 の場合
 
-| process name | port number | access to | cache | protocol |
-| --- | --- | --- | --- | --- |
-| nginx(master) | 22670 | nginx(slave 1、2と3 に均等に) | on | HTTP |
-| nginx(slave 1) | 22671 | word2vec-message-pack-server 1 | - | HTTP & MessagePack-RPC |
-| nginx(slave 2) | 22672 | word2vec-message-pack-server 2 | - | HTTP & MessagePack-RPC |
-| nginx(slave 3) | 22673 | word2vec-message-pack-server 3 | - | HTTP & MessagePack-RPC |
-| word2vec-message-pack-server 1 | 22676 | sample model | - | MessagePack-RPC |
-| word2vec-message-pack-server 2 | 22677 | sample model | - | MessagePack-RPC |
-| word2vec-message-pack-server 3 | 22678 | sample model | - | MessagePack-RPC |
+| process name | port number | request to | return to | cache of response | protocol |
+| --- | --- | --- | --- | --- | --- |
+| nginx(master) | 22670 | nginx(slave 1、2と3 に均等に) | user | on | HTTP |
+| nginx(slave 1) | 22671 | word2vec-message-pack-server 1 | nginx(master) | - | HTTP & MessagePack-RPC |
+| nginx(slave 2) | 22672 | word2vec-message-pack-server 2 | nginx(master) | - | HTTP & MessagePack-RPC |
+| nginx(slave 3) | 22673 | word2vec-message-pack-server 3 | nginx(master) | - | HTTP & MessagePack-RPC |
+| word2vec-message-pack-server 1 | 22676 | sample model | nginx(slave 1) | - | MessagePack-RPC |
+| word2vec-message-pack-server 2 | 22677 | sample model | nginx(slave 2) | - | MessagePack-RPC |
+| word2vec-message-pack-server 3 | 22678 | sample model | nginx(slave 3) | - | MessagePack-RPC |
 
 ### カスタマイズ時の設定ファイルなどの編集方法
 いま書いてます。
